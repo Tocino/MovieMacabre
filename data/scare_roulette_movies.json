@@ -1,0 +1,1863 @@
+{
+  "schema_version": 1,
+  "scare_scale": {
+    "1": "Cozy",
+    "2": "Spooky Fun",
+    "3": "Scary",
+    "4": "Very Scary",
+    "5": "Extreme / disturbing / graphic"
+  },
+  "movies": [
+    {
+      "title": "10 Cloverfield Lane",
+      "year": 2016,
+      "scare_rating": 3,
+      "genres": [
+        "sci-fi"
+      ]
+    },
+    {
+      "title": "1408",
+      "year": 2007,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "28 Days Later",
+      "year": 2002,
+      "scare_rating": 4,
+      "genres": [
+        "zombie"
+      ]
+    },
+    {
+      "title": "30 Days of Night",
+      "year": 2007,
+      "scare_rating": 3,
+      "genres": [
+        "vampire"
+      ]
+    },
+    {
+      "title": "A Nightmare on Elm Street",
+      "year": 1984,
+      "scare_rating": 3,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "A Quiet Place",
+      "year": 2018,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "A Quiet Place Part II",
+      "year": 2020,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Abbott and Costello Meet Frankenstein",
+      "year": 1948,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Abigail",
+      "year": 2024,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Alien",
+      "year": 1979,
+      "scare_rating": 4,
+      "genres": [
+        "sci-fi"
+      ]
+    },
+    {
+      "title": "An American Werewolf in London",
+      "year": 1981,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Annabelle",
+      "year": 2014,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "Annihilation",
+      "year": 2018,
+      "scare_rating": 3,
+      "genres": [
+        "sci-fi"
+      ]
+    },
+    {
+      "title": "Antichrist",
+      "year": 2009,
+      "scare_rating": 5,
+      "genres": [
+        "body-horror"
+      ]
+    },
+    {
+      "title": "Arachnophobia",
+      "year": 1990,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Army of Darkness",
+      "year": 1992,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "As Above, So Below",
+      "year": 2014,
+      "scare_rating": 4,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Audition",
+      "year": 1999,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Barbarian",
+      "year": 2022,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Baskin",
+      "year": 2015,
+      "scare_rating": 5,
+      "genres": [
+        "body-horror"
+      ]
+    },
+    {
+      "title": "Beetlejuice",
+      "year": 1988,
+      "scare_rating": 1,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Beetlejuice Beetlejuice",
+      "year": 2024,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Blade",
+      "year": 1998,
+      "scare_rating": 3,
+      "genres": [
+        "vampire"
+      ]
+    },
+    {
+      "title": "Bodies Bodies Bodies",
+      "year": 2022,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Bone Tomahawk",
+      "year": 2015,
+      "scare_rating": 5,
+      "genres": [
+        "body-horror"
+      ]
+    },
+    {
+      "title": "Bram Stoker's Dracula",
+      "year": 1992,
+      "scare_rating": 3,
+      "genres": [
+        "vampire"
+      ]
+    },
+    {
+      "title": "Bubba Ho-Tep",
+      "year": 2002,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Candyman",
+      "year": 1992,
+      "scare_rating": 3,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "Candyman",
+      "year": 2021,
+      "scare_rating": 3,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "Casper",
+      "year": 1995,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Caveat",
+      "year": 2020,
+      "scare_rating": 4,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Child's Play",
+      "year": 1988,
+      "scare_rating": 3,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "Cloverfield",
+      "year": 2008,
+      "scare_rating": 3,
+      "genres": [
+        "sci-fi"
+      ]
+    },
+    {
+      "title": "Coco",
+      "year": 2017,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Coraline",
+      "year": 2009,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Corpse Bride",
+      "year": 2005,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Crawl",
+      "year": 2019,
+      "scare_rating": 3,
+      "genres": [
+        "creature",
+        "body-horror"
+      ]
+    },
+    {
+      "title": "Creature from the Black Lagoon",
+      "year": 1954,
+      "scare_rating": 1,
+      "genres": [
+        "creature"
+      ]
+    },
+    {
+      "title": "Creepshow",
+      "year": 1982,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Critters",
+      "year": 1986,
+      "scare_rating": 2,
+      "genres": [
+        "creature"
+      ]
+    },
+    {
+      "title": "Cujo",
+      "year": 1983,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Dawn of the Dead",
+      "year": 2004,
+      "scare_rating": 3,
+      "genres": [
+        "zombie"
+      ]
+    },
+    {
+      "title": "Deadstream",
+      "year": 2022,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Death Becomes Her",
+      "year": 1992,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Doctor Sleep",
+      "year": 2019,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Dog Soldiers",
+      "year": 2002,
+      "scare_rating": 3,
+      "genres": [
+        "creature"
+      ]
+    },
+    {
+      "title": "Don't Breathe",
+      "year": 2016,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Dracula",
+      "year": 1931,
+      "scare_rating": 1,
+      "genres": [
+        "vampire"
+      ]
+    },
+    {
+      "title": "Drag Me to Hell",
+      "year": 2009,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Edward Scissorhands",
+      "year": 1990,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Elvira: Mistress of the Dark",
+      "year": 1988,
+      "scare_rating": 2,
+      "genres": [
+        "creature"
+      ]
+    },
+    {
+      "title": "Ernest Scared Stupid",
+      "year": 1991,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Event Horizon",
+      "year": 1997,
+      "scare_rating": 4,
+      "genres": [
+        "sci-fi"
+      ]
+    },
+    {
+      "title": "Evil Dead",
+      "year": 2013,
+      "scare_rating": 5,
+      "genres": [
+        "body-horror"
+      ]
+    },
+    {
+      "title": "Final Destination",
+      "year": 2000,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Frankenstein",
+      "year": 1931,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Frankenweenie",
+      "year": 2012,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Freaky",
+      "year": 2020,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Fright Night",
+      "year": 1985,
+      "scare_rating": 2,
+      "genres": [
+        "vampire"
+      ]
+    },
+    {
+      "title": "Fright Night",
+      "year": 2011,
+      "scare_rating": 2,
+      "genres": [
+        "vampire"
+      ]
+    },
+    {
+      "title": "Funny Games",
+      "year": 1997,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Get Out",
+      "year": 2017,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Ghostbusters",
+      "year": 1984,
+      "scare_rating": 2,
+      "genres": [
+        "found-footage",
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Ghostbusters: Afterlife",
+      "year": 2021,
+      "scare_rating": 1,
+      "genres": [
+        "found-footage",
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Ghostbusters: Frozen Empire",
+      "year": 2024,
+      "scare_rating": 1,
+      "genres": [
+        "found-footage",
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Gonjiam: Haunted Asylum",
+      "year": 2018,
+      "scare_rating": 5,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "Grave Encounters",
+      "year": 2011,
+      "scare_rating": 4,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "Green Room",
+      "year": 2015,
+      "scare_rating": 4,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Gremlins",
+      "year": 1984,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Halloween",
+      "year": 1978,
+      "scare_rating": 3,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "Halloweentown",
+      "year": 1998,
+      "scare_rating": 1,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "Happy Death Day",
+      "year": 2017,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Haunted Mansion",
+      "year": 2023,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Hell House LLC",
+      "year": 2015,
+      "scare_rating": 4,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "Henry: Portrait of a Serial Killer",
+      "year": 1986,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Hereditary",
+      "year": 2018,
+      "scare_rating": 5,
+      "genres": [
+        "psychological"
+      ]
+    },
+    {
+      "title": "High Tension",
+      "year": 2003,
+      "scare_rating": 5,
+      "genres": [
+        "body-horror"
+      ]
+    },
+    {
+      "title": "His House",
+      "year": 2020,
+      "scare_rating": 4,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Hocus Pocus",
+      "year": 1993,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Host",
+      "year": 2020,
+      "scare_rating": 4,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "Hostel",
+      "year": 2005,
+      "scare_rating": 5,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "Hostel: Part II",
+      "year": 2007,
+      "scare_rating": 5,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "Hotel Transylvania",
+      "year": 2012,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Housebound",
+      "year": 2014,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Hush",
+      "year": 2016,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "I Saw the Devil",
+      "year": 2010,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Incantation",
+      "year": 2022,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Inside",
+      "year": 2007,
+      "scare_rating": 5,
+      "genres": [
+        "body-horror"
+      ]
+    },
+    {
+      "title": "Insidious",
+      "year": 2010,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "Insidious: The Red Door",
+      "year": 2023,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "It's the Great Pumpkin, Charlie Brown",
+      "year": 1966,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Jennifer's Body",
+      "year": 2009,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Kiki's Delivery Service",
+      "year": 1989,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Killer Klowns from Outer Space",
+      "year": 1988,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Krampus",
+      "year": 2015,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Let the Right One In",
+      "year": 2008,
+      "scare_rating": 3,
+      "genres": [
+        "vampire"
+      ]
+    },
+    {
+      "title": "Lisa Frankenstein",
+      "year": 2024,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Little Shop of Horrors",
+      "year": 1986,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Mama",
+      "year": 2013,
+      "scare_rating": 4,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Maniac",
+      "year": 2012,
+      "scare_rating": 5,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "Martyrs",
+      "year": 2008,
+      "scare_rating": 5,
+      "genres": [
+        "body-horror"
+      ]
+    },
+    {
+      "title": "Midsommar",
+      "year": 2019,
+      "scare_rating": 5,
+      "genres": [
+        "psychological",
+        "folk-occult"
+      ]
+    },
+    {
+      "title": "Misery",
+      "year": 1990,
+      "scare_rating": 3,
+      "genres": [
+        "psychological"
+      ]
+    },
+    {
+      "title": "Monster House",
+      "year": 2006,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Mother!",
+      "year": 2017,
+      "scare_rating": 4,
+      "genres": [
+        "psychological"
+      ]
+    },
+    {
+      "title": "Muppets Haunted Mansion",
+      "year": 2021,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Night of the Creeps",
+      "year": 1986,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Night of the Living Dead",
+      "year": 1968,
+      "scare_rating": 3,
+      "genres": [
+        "zombie"
+      ]
+    },
+    {
+      "title": "Nope",
+      "year": 2022,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Orphan",
+      "year": 2009,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Overlord",
+      "year": 2018,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Pandorum",
+      "year": 2009,
+      "scare_rating": 3,
+      "genres": [
+        "sci-fi"
+      ]
+    },
+    {
+      "title": "Paranormal Activity",
+      "year": 2007,
+      "scare_rating": 4,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "ParaNorman",
+      "year": 2012,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Pet Sematary",
+      "year": 1989,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Poltergeist",
+      "year": 1982,
+      "scare_rating": 3,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "Pontypool",
+      "year": 2008,
+      "scare_rating": 3,
+      "genres": [
+        "zombie"
+      ]
+    },
+    {
+      "title": "Possession",
+      "year": 1981,
+      "scare_rating": 5,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "Practical Magic",
+      "year": 1998,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Psycho",
+      "year": 1960,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Psycho Goreman",
+      "year": 2020,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Pumpkinhead",
+      "year": 1988,
+      "scare_rating": 3,
+      "genres": [
+        "creature"
+      ]
+    },
+    {
+      "title": "Raw",
+      "year": 2016,
+      "scare_rating": 5,
+      "genres": [
+        "body-horror"
+      ]
+    },
+    {
+      "title": "Ready or Not",
+      "year": 2019,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "REC",
+      "year": 2007,
+      "scare_rating": 4,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "Saw",
+      "year": 2004,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Saw III",
+      "year": 2006,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Saw X",
+      "year": 2023,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Scooby-Doo 2: Monsters Unleashed",
+      "year": 2004,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Scooby-Doo on Zombie Island",
+      "year": 1998,
+      "scare_rating": 1,
+      "genres": [
+        "zombie"
+      ]
+    },
+    {
+      "title": "Scream",
+      "year": 1996,
+      "scare_rating": 3,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "Session 9",
+      "year": 2001,
+      "scare_rating": 4,
+      "genres": [
+        "psychological"
+      ]
+    },
+    {
+      "title": "Shaun of the Dead",
+      "year": 2004,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Sinister",
+      "year": 2012,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "Sleepy Hollow",
+      "year": 1999,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Slither",
+      "year": 2006,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Smile",
+      "year": 2022,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Splinter",
+      "year": 2008,
+      "scare_rating": 3,
+      "genres": [
+        "creature"
+      ]
+    },
+    {
+      "title": "Suspiria",
+      "year": 2018,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Talk to Me",
+      "year": 2022,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "Terrifier",
+      "year": 2016,
+      "scare_rating": 5,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "Terrifier 2",
+      "year": 2022,
+      "scare_rating": 5,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "Terrifier 3",
+      "year": 2024,
+      "scare_rating": 5,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "The Addams Family",
+      "year": 1991,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "The Addams Family",
+      "year": 2019,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "The Babadook",
+      "year": 2014,
+      "scare_rating": 4,
+      "genres": [
+        "psychological"
+      ]
+    },
+    {
+      "title": "The Babysitter",
+      "year": 2017,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "The Bay",
+      "year": 2012,
+      "scare_rating": 4,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Black Cauldron",
+      "year": 1985,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "The Black Phone",
+      "year": 2021,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Blackcoat's Daughter",
+      "year": 2015,
+      "scare_rating": 4,
+      "genres": [
+        "folk-occult"
+      ]
+    },
+    {
+      "title": "The Blair Witch Project",
+      "year": 1999,
+      "scare_rating": 4,
+      "genres": [
+        "found-footage",
+        "supernatural",
+        "folk-occult"
+      ]
+    },
+    {
+      "title": "The Blob",
+      "year": 1988,
+      "scare_rating": 2,
+      "genres": [
+        "creature"
+      ]
+    },
+    {
+      "title": "The Book of Life",
+      "year": 2014,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "The Borderlands",
+      "year": 2013,
+      "scare_rating": 4,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "The Bride of Frankenstein",
+      "year": 1935,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "The Cabin in the Woods",
+      "year": 2011,
+      "scare_rating": 3,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "The Changeling",
+      "year": 1980,
+      "scare_rating": 4,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Collection",
+      "year": 2012,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Collector",
+      "year": 2009,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Conjuring",
+      "year": 2013,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The Conjuring: Last Rites",
+      "year": 2025,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The Craft",
+      "year": 1996,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "The Crazies",
+      "year": 2010,
+      "scare_rating": 3,
+      "genres": [
+        "zombie"
+      ]
+    },
+    {
+      "title": "The Dark and the Wicked",
+      "year": 2020,
+      "scare_rating": 5,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The Descent",
+      "year": 2005,
+      "scare_rating": 4,
+      "genres": [
+        "creature"
+      ]
+    },
+    {
+      "title": "The Devil's Candy",
+      "year": 2015,
+      "scare_rating": 4,
+      "genres": [
+        "folk-occult"
+      ]
+    },
+    {
+      "title": "The Empty Man",
+      "year": 2020,
+      "scare_rating": 4,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Exorcist",
+      "year": 1973,
+      "scare_rating": 5,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The Exorcist III",
+      "year": 1990,
+      "scare_rating": 5,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The Eyes of My Mother",
+      "year": 2016,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Faculty",
+      "year": 1998,
+      "scare_rating": 3,
+      "genres": [
+        "sci-fi"
+      ]
+    },
+    {
+      "title": "The First Omen",
+      "year": 2024,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The Fly",
+      "year": 1986,
+      "scare_rating": 5,
+      "genres": [
+        "sci-fi",
+        "body-horror"
+      ]
+    },
+    {
+      "title": "The Frighteners",
+      "year": 1996,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "The Girl with All the Gifts",
+      "year": 2016,
+      "scare_rating": 3,
+      "genres": [
+        "zombie"
+      ]
+    },
+    {
+      "title": "The Green Inferno",
+      "year": 2013,
+      "scare_rating": 5,
+      "genres": [
+        "body-horror"
+      ]
+    },
+    {
+      "title": "The Grudge",
+      "year": 2004,
+      "scare_rating": 5,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The Haunted Mansion",
+      "year": 2003,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "The Hills Have Eyes",
+      "year": 2006,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The House That Jack Built",
+      "year": 2018,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The House with a Clock in Its Walls",
+      "year": 2018,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "The Invisible Man",
+      "year": 2020,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Invitation",
+      "year": 2015,
+      "scare_rating": 3,
+      "genres": [
+        "psychological"
+      ]
+    },
+    {
+      "title": "The Last Exorcism",
+      "year": 2010,
+      "scare_rating": 4,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "The Little Vampire",
+      "year": 2000,
+      "scare_rating": 1,
+      "genres": [
+        "vampire"
+      ]
+    },
+    {
+      "title": "The Lost Boys",
+      "year": 1987,
+      "scare_rating": 3,
+      "genres": [
+        "vampire"
+      ]
+    },
+    {
+      "title": "The Menu",
+      "year": 2022,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Mist",
+      "year": 2007,
+      "scare_rating": 3,
+      "genres": [
+        "creature"
+      ]
+    },
+    {
+      "title": "The Mummy",
+      "year": 1932,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "The Mummy",
+      "year": 1999,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "The Night House",
+      "year": 2020,
+      "scare_rating": 4,
+      "genres": [
+        "psychological"
+      ]
+    },
+    {
+      "title": "The Nightmare Before Christmas",
+      "year": 1993,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "The Nun",
+      "year": 2018,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The Omen",
+      "year": 1976,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The Others",
+      "year": 2001,
+      "scare_rating": 3,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The People Under the Stairs",
+      "year": 1991,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "The Poughkeepsie Tapes",
+      "year": 2007,
+      "scare_rating": 5,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "The Purge",
+      "year": 2013,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Return of the Living Dead",
+      "year": 1985,
+      "scare_rating": 2,
+      "genres": [
+        "zombie"
+      ]
+    },
+    {
+      "title": "The Ring",
+      "year": 2002,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural"
+      ]
+    },
+    {
+      "title": "The Ritual",
+      "year": 2017,
+      "scare_rating": 4,
+      "genres": [
+        "folk-occult"
+      ]
+    },
+    {
+      "title": "The Ruins",
+      "year": 2008,
+      "scare_rating": 4,
+      "genres": [
+        "creature"
+      ]
+    },
+    {
+      "title": "The Sacrament",
+      "year": 2013,
+      "scare_rating": 4,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "The Sadness",
+      "year": 2021,
+      "scare_rating": 5,
+      "genres": [
+        "zombie"
+      ]
+    },
+    {
+      "title": "The Shining",
+      "year": 1980,
+      "scare_rating": 4,
+      "genres": [
+        "psychological"
+      ]
+    },
+    {
+      "title": "The Sixth Sense",
+      "year": 1999,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Skeleton Key",
+      "year": 2005,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "The Strangers",
+      "year": 2008,
+      "scare_rating": 4,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "The Taking of Deborah Logan",
+      "year": 2014,
+      "scare_rating": 5,
+      "genres": [
+        "found-footage"
+      ]
+    },
+    {
+      "title": "The Texas Chain Saw Massacre",
+      "year": 1974,
+      "scare_rating": 5,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "The Thing",
+      "year": 1982,
+      "scare_rating": 5,
+      "genres": [
+        "sci-fi"
+      ]
+    },
+    {
+      "title": "The Wailing",
+      "year": 2016,
+      "scare_rating": 5,
+      "genres": [
+        "folk-occult"
+      ]
+    },
+    {
+      "title": "The Witch",
+      "year": 2015,
+      "scare_rating": 4,
+      "genres": [
+        "supernatural",
+        "folk-occult"
+      ]
+    },
+    {
+      "title": "The Witches",
+      "year": 1990,
+      "scare_rating": 1,
+      "genres": [
+        "supernatural",
+        "folk-occult"
+      ]
+    },
+    {
+      "title": "The Wolf Man",
+      "year": 1941,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "Train to Busan",
+      "year": 2016,
+      "scare_rating": 3,
+      "genres": [
+        "zombie"
+      ]
+    },
+    {
+      "title": "Tremors",
+      "year": 1990,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Trick 'r Treat",
+      "year": 2007,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Tucker & Dale vs. Evil",
+      "year": 2010,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Underwater",
+      "year": 2020,
+      "scare_rating": 3,
+      "genres": [
+        "sci-fi"
+      ]
+    },
+    {
+      "title": "Us",
+      "year": 2019,
+      "scare_rating": 3,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Van Helsing",
+      "year": 2004,
+      "scare_rating": 2,
+      "genres": [
+        "spooky-fun"
+      ]
+    },
+    {
+      "title": "Wendell & Wild",
+      "year": 2022,
+      "scare_rating": 1,
+      "genres": [
+        "family-halloween"
+      ]
+    },
+    {
+      "title": "What We Do in the Shadows",
+      "year": 2014,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "When Evil Lurks",
+      "year": 2023,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "Wolf Creek",
+      "year": 2005,
+      "scare_rating": 5,
+      "genres": [
+        "horror"
+      ]
+    },
+    {
+      "title": "You're Next",
+      "year": 2011,
+      "scare_rating": 3,
+      "genres": [
+        "slasher"
+      ]
+    },
+    {
+      "title": "Young Frankenstein",
+      "year": 1974,
+      "scare_rating": 2,
+      "genres": [
+        "horror-comedy"
+      ]
+    },
+    {
+      "title": "Zombieland",
+      "year": 2009,
+      "scare_rating": 2,
+      "genres": [
+        "zombie",
+        "horror-comedy"
+      ]
+    }
+  ]
+}
