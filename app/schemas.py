@@ -45,7 +45,9 @@ class MovieResponse(BaseModel):
     title: str
     year: int
     scare_rating: int
-    subgenres: list[SubgenreResponse] = []
+    subgenres: list[SubgenreResponse] = Field(
+        default_factory=list
+    )
 
     model_config = {
         "from_attributes": True
@@ -60,7 +62,9 @@ class VotingSessionResponse(BaseModel):
     name: str
     code: str
     is_active: bool
-
+    movies: list[MovieResponse] = Field(
+        default_factory=list
+    )    
     model_config = {
         "from_attributes": True
     }
@@ -73,7 +77,7 @@ class RemoveMoviesFromSession(BaseModel):
 
 class VoteCreate(BaseModel):
     user_id: int
-    movie_id: int
+    movie_ids: list[int]
 
 class VoteResponse(BaseModel):
     id: int
@@ -97,3 +101,14 @@ class UserResponse(BaseModel):
     model_config = {
         "from_attributes": True
     }
+
+class MovieResult(BaseModel):
+    movie_id: int
+    title: str
+    votes: int
+
+
+class VotingResults(BaseModel):
+    session_name: str
+    code: str
+    results: list[MovieResult]

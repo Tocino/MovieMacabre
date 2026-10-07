@@ -1,5 +1,4 @@
-from pydantic.v1 import BaseModel
-from sqlalchemy import Boolean, ForeignKey, Integer, String
+from sqlalchemy import Boolean, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .database import Base
@@ -37,7 +36,12 @@ class Movie(Base):
     subgenres: Mapped[list["Subgenre"]] = relationship(
     secondary="movie_subgenres",
     back_populates="movies"
-)
+    )
+
+    voting_sessions: Mapped[list["VotingSession"]] = relationship(
+    secondary="movie_sessions",
+    back_populates="movies"
+    )
 
 class Subgenre(Base):
     __tablename__ = "subgenres"
@@ -114,6 +118,11 @@ class VotingSession(Base):
         nullable=False
     )
 
+    movies: Mapped[list["Movie"]] = relationship(
+    secondary="movie_sessions",
+    back_populates="voting_sessions"
+    )
+
 class MovieSession(Base):
     __tablename__ = "movie_sessions"
 
@@ -152,6 +161,15 @@ class Vote(Base):
         nullable=False
     )
 
+    __table_args__ = (
+        UniqueConstraint(
+            "user_id",
+            "session_id",
+            "movie_id",
+            name="uq_user_session_movie_vote"
+        ),
+    )
+
 
 class User(Base):
     __tablename__ = "users"
@@ -178,4 +196,4 @@ class User(Base):
         Boolean,
         default=True,
         nullable=False
-    )
+    )    

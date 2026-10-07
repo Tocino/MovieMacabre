@@ -1,13 +1,45 @@
 import { useState } from "react"
+import { createUser, getUserByUsername, getOrCreateUser, getVotingSession } from "../services/api"
+import { useNavigate } from "react-router-dom"
 
 function JoinSession() {
   const [username, setUsername] = useState("")
   const [sessionCode, setSessionCode] = useState("")
+  const navigate = useNavigate()
+  const [error, setError] = useState("")
 
-  function handleJoin() {
-  console.log("Username:", username)
-  console.log("Session code:", sessionCode)
+async function handleJoin() {
+  try {
+    const user =
+      await getOrCreateUser(username)
+
+    const session =
+      await getVotingSession(sessionCode)
+
+    if (!session) {
+      setError("Invalid session code")
+      return
+    }
+
+    sessionStorage.setItem(
+      "user",
+      JSON.stringify(user)
+    )
+    navigate(
+      `/vote/${session.code}`,
+      {
+        state: {
+          user: user
+        }
+      }
+    )
+
+  } catch (error) {
+    console.error(error)
+  }
 }
+
+
 
   return (
     <div>
@@ -36,7 +68,8 @@ function JoinSession() {
 
       <button onClick={handleJoin}>
         Join Session
-      </button>    
+      </button>
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   )
 }

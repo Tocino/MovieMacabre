@@ -107,3 +107,38 @@ def remove_movies_from_session(
         )
 
     return voting_session
+
+
+@router.patch("/{code}/close")
+def close_voting(
+    code: str,
+    db: Session = Depends(get_db)
+):
+    try:
+        return voting_service.close_voting(
+            db=db,
+            code=code
+        )
+
+    except ValueError as error:
+        raise HTTPException(
+            status_code=404,
+            detail=str(error)
+        )
+
+@router.patch("/{code}/open")
+def open_voting(
+    code: str,
+    db: Session = Depends(get_db)
+):
+    try:
+        return voting_service.open_voting(
+            db=db,
+            code=code
+        )
+
+    except ValueError as error:
+        raise HTTPException(
+            status_code=404,
+            detail=str(error)
+        )

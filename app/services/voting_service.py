@@ -1,7 +1,6 @@
 import secrets
-
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 from app.models import MovieSession, VotingSession, Movie
 from app.schemas import VotingSessionCreate
 
@@ -56,11 +55,15 @@ def get_session_by_code(
     db: Session,
     code: str
 ):
-
     statement = (
         select(VotingSession)
-        .where(VotingSession.code == code.upper())
-        .where(VotingSession.is_active.is_(True))
+        .options(
+            selectinload(VotingSession.movies)
+            .selectinload(Movie.subgenres)
+        )
+        .where(
+            VotingSession.code == code
+        )
     )
 
     return db.scalar(statement)
@@ -147,4 +150,48 @@ def remove_movies_from_session(
 
     db.commit()
     db.refresh(voting_session)
+    return voting_session
+
+
+def close_voting(
+    db: Session,
+    code: str
+):
+    voting_session = get_session_by_code(
+        db,
+        code
+    )
+
+    if voting_session is None:
+        raise ValueError(
+            "Voting session not found"
+        )
+
+    voting_session.is_active = False
+
+    db.commit()
+    db.refresh(voting_session)
+
+    return voting_session
+
+
+def open_voting(
+    db: Session,
+    code: str
+):
+    voting_session = get_session_by_code(
+        db,
+        code
+    )
+
+    if voting_session is None:
+        raise ValueError(
+            "Voting session not found"
+        )
+
+    voting_session.is_active = True
+
+    db.commit()
+    db.refresh(voting_session)
+
     return voting_session
