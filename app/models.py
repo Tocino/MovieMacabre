@@ -43,6 +43,7 @@ class Movie(Base):
     back_populates="movies"
     )
 
+
 class Subgenre(Base):
     __tablename__ = "subgenres"
 
@@ -63,6 +64,7 @@ class Subgenre(Base):
         back_populates="subgenres"
     )
 
+
 class MovieSubgenres(Base):
 
     __tablename__ = "movie_subgenres"
@@ -79,6 +81,7 @@ class MovieSubgenres(Base):
         primary_key=True
     )
 
+
 class AppState(Base):
     __tablename__ = "app_state"
 
@@ -91,6 +94,7 @@ class AppState(Base):
         ForeignKey("subgenres.id"),
         nullable=True
     )
+
 
 class VotingSession(Base):
     __tablename__ = "voting_sessions"
@@ -123,6 +127,7 @@ class VotingSession(Base):
     back_populates="voting_sessions"
     )
 
+
 class MovieSession(Base):
     __tablename__ = "movie_sessions"
 
@@ -137,6 +142,7 @@ class MovieSession(Base):
         ForeignKey("voting_sessions.id"),
         primary_key=True
     )
+
 
 class Vote(Base):
     __tablename__ = "votes"
@@ -197,3 +203,8 @@ class User(Base):
         default=True,
         nullable=False
     )    
+    
+    hashed_password: Mapped[str] = mapped_column(
+        String,
+        nullable=False
+    )

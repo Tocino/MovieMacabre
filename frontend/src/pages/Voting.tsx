@@ -1,279 +1,448 @@
+
 import {
   useEffect,
-  useState
-} from "react"
+  useState,
+} from "react";
 
 import {
   useParams,
-  useLocation,
-  useNavigate
-} from "react-router-dom"
+  useNavigate,
+} from "react-router-dom";
 
 import {
   getVotingSession,
-  getUserVotes
-} from "../services/api"
+  getUserVotes,
+  castVote,
+  getCurrentUser,
+  logoutUser
+} from "../services/api";
 
 import type {
-  VotingSession
-} from "../types/session"
+  VotingSession,
+} from "../types/session";
 
-
+import AppHeader from "../components/AppHeader";
 
 function Voting() {
-
   const [submitMessage, setSubmitMessage] =
-    useState("")
+    useState("");
 
   const [isSubmitting, setIsSubmitting] =
-    useState(false)
+    useState(false);
 
   const [submitError, setSubmitError] =
-    useState("")
+    useState("");
 
-  const { code } = useParams()
+  const [username, setUsername] =
+    useState("");
 
-  const location = useLocation()
+  const [checkingAuth, setCheckingAuth] =
+    useState(true);
 
-  const from = location.state?.from
-
-  const storedUser =
-    sessionStorage.getItem("user")
-
-  const user =
-    location.state?.user ??
-    (storedUser
-      ? JSON.parse(storedUser)
-      : null)
-        
   const [session, setSession] =
-    useState<VotingSession | null>(null)
+    useState<VotingSession | null>(null);
 
-  const [selectedMovieIds, setSelectedMovieIds] =
-    useState<number[]>([])
+  const [
+    selectedMovieIds,
+    setSelectedMovieIds,
+  ] = useState<number[]>([]);
 
-  const navigate = useNavigate()
+  const { code } = useParams();
 
-  // Load the voting session
+  const navigate = useNavigate();
+
+  // -------------------------
+  // Check authentication
+  // -------------------------
+
   useEffect(() => {
+    async function checkAuth() {
+      try {
+        const currentUser =
+          await getCurrentUser();
 
+        setUsername(
+          currentUser.username
+        );
+      } catch (error) {
+        console.error(
+          "Authentication failed:",
+          error
+        );
+
+        sessionStorage.removeItem(
+          "access_token"
+        );
+
+        navigate("/login");
+      } finally {
+        setCheckingAuth(false);
+      }
+    }
+
+    checkAuth();
+  }, [navigate]);
+
+  // -------------------------
+  // Load voting session
+  // -------------------------
+
+  useEffect(() => {
     async function loadSession() {
-
       if (!code) {
-        return
+        return;
       }
 
-      const votingSession =
-        await getVotingSession(code)
+      try {
+        const votingSession =
+          await getVotingSession(code);
 
-      setSession(votingSession)
+        setSession(votingSession);
+      } catch (error) {
+        console.error(
+          "Failed to load voting session:",
+          error
+        );
+      }
     }
 
-    loadSession()
+    loadSession();
 
-  }, [code])
+    const intervalId =
+      setInterval(
+        loadSession,
+        5000
+      );
 
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [code]);
+
+  // -------------------------
+  // Load current user's votes
+  // -------------------------
 
   useEffect(() => {
+    async function loadUserVotes() {
+      if (!code || checkingAuth) {
+        return;
+      }
 
-  async function loadUserVotes() {
+      try {
+        const movieIds =
+          await getUserVotes(code);
 
-    if (!code || !user) {
-      return
+        setSelectedMovieIds(
+          movieIds
+        );
+      } catch (error) {
+        console.error(
+          "Failed to load user votes:",
+          error
+        );
+      }
     }
 
-    const movieIds =
-      await getUserVotes(
+    loadUserVotes();
+  }, [code, checkingAuth]);
+
+  // -------------------------
+  // Toggle movie
+  // -------------------------
+
+  function toggleMovie(
+    movieId: number
+  ) {
+    setSelectedMovieIds(
+      (currentIds) => {
+        if (
+          currentIds.includes(movieId)
+        ) {
+          return currentIds.filter(
+            (id) => id !== movieId
+          );
+        }
+
+        return [
+          ...currentIds,
+          movieId,
+        ];
+      }
+    );
+  }
+
+  // -------------------------
+  // Submit vote
+  // -------------------------
+
+  async function handleSubmitVote() {
+    if (!code) {
+      setSubmitError(
+        "Session code not found."
+      );
+
+      return;
+    }
+
+    if (!session?.is_active) {
+      setSubmitError(
+        "Voting is closed for this session."
+      );
+
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitMessage("");
+    setSubmitError("");
+
+    try {
+      await castVote(
         code,
-        user.id
-      )
+        selectedMovieIds
+      );
 
-    setSelectedMovieIds(movieIds)
-  }
+      setSubmitMessage(
+        "Your votes have been submitted!"
+      );
+    } catch (error) {
+      console.error(
+        "Error submitting votes:",
+        error
+      );
 
-  loadUserVotes()
-
-}, [code, user?.id])
-
-
-  // ↓↓↓ TOGGLE GOES HERE ↓↓↓
-
-  function toggleMovie(movieId: number) {
-
-    setSelectedMovieIds((currentIds) => {
-
-      if (currentIds.includes(movieId)) {
-
-        return currentIds.filter(
-          (id) => id !== movieId
-        )
+      if (error instanceof Error) {
+        setSubmitError(
+          error.message
+        );
+      } else {
+        setSubmitError(
+          "Could not submit your votes. Please try again."
+        );
       }
-
-      return [
-        ...currentIds,
-        movieId
-      ]
-    })
-  }
-
-async function handleSubmitVote() {
-
-  if (!user) {
-    setSubmitError("No user found")
-    return
-  }
-
-  setIsSubmitting(true)
-  setSubmitMessage("")
-  setSubmitError("")
-
-  try {
-
-    const response = await fetch(
-      `http://localhost:8000/voting/${code}/votes`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          user_id: user.id,
-          movie_ids: selectedMovieIds,
-        }),
-      }
-    )
-
-    if (!response.ok) {
-      const error = await response.json()
-
-      throw new Error(
-        error.detail ||
-        "Failed to submit vote"
-      )
+    } finally {
+      setIsSubmitting(false);
     }
-
-    await response.json()
-
-    setSubmitMessage(
-      "Your votes have been submitted!"
-    )
-
-  } catch (error) {
-
-    console.error(
-      "Error submitting votes:",
-      error
-    )
-
-    setSubmitError(
-      "Could not submit your votes. Please try again."
-    )
-
-  } finally {
-
-    setIsSubmitting(false)
-
   }
+
+  // -------------------------
+  // Authentication loading
+  // -------------------------
+
+  if (checkingAuth) {
+    return (
+      <p>Checking login...</p>
+    );
+  }
+
+
+function handleLogout() {
+  logoutUser();
+  navigate("/login");
 }
 
-  // ↓↓↓ THEN THE RETURN ↓↓↓
+  // -------------------------
+  // Page
+  // -------------------------
 
-  return (
-    <div>
+return (
+  <>
+    <AppHeader
+      username={username}
+    />
 
-      <h1>MovieMacabre</h1>
+    <main className="app-page">
+
+      {!session && (
+        <section className="panel">
+          <p>
+            Loading session...
+          </p>
+        </section>
+      )}
 
       {session && (
         <>
-          <h2>{session.name}</h2>
+          {/* Session information */}
 
-          <p>
-            Welcome {user?.username}
-          </p>
+          <section className="panel">
+            <h2>
+              {session.name}
+            </h2>
 
-          <h3>
-            Select the movies you want to watch
-          </h3>
-
-          {session.movies.map((movie) => (
-
-            <div key={movie.id}>
-
-              <input
-                type="checkbox"
-                checked={
-                  selectedMovieIds.includes(
-                    movie.id
-                  )
-                }
-                onChange={() =>
-                  toggleMovie(movie.id)
-                }
-              />
-
+            <p>
+              Welcome{" "}
               <strong>
-                {movie.title}
+                {username}
               </strong>
+            </p>
 
-              {" "}({movie.year})
+            <button
+              type="button"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
 
-              {" — Scare Rating: "}
-              {movie.scare_rating}
+            <p>
+              Session Code:{" "}
+              <strong>
+                {session.code}
+              </strong>
+            </p>
 
-              {" — Genre: "}
+            <p>
+              Status:{" "}
 
-              {movie.subgenres
-                .map(
-                  (subgenre) =>
-                    subgenre.name
+              <span
+                className={
+                  session.is_active
+                    ? "status-active"
+                    : "status-inactive"
+                }
+              >
+                {session.is_active
+                  ? "● Voting Open"
+                  : "● Voting Closed"}
+              </span>
+            </p>
+          </section>
+
+          {/* Voting */}
+
+          <section className="panel">
+            <h2>
+              Select Your Movies
+            </h2>
+
+            <p>
+              Choose all the movies you
+              would like to watch.
+            </p>
+
+            {!session.is_active && (
+              <p className="error-message">
+                Voting is closed for this
+                session. Your previous
+                selections are shown below.
+              </p>
+            )}
+
+            <div className="movie-list">
+              {session.movies.map(
+                (movie) => (
+                  <label
+                    className="movie-row"
+                    key={movie.id}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={
+                        selectedMovieIds.includes(
+                          movie.id
+                        )
+                      }
+                      onChange={() =>
+                        toggleMovie(
+                          movie.id
+                        )
+                      }
+                      disabled={
+                        !session.is_active
+                      }
+                    />
+
+                    <div>
+                      <span className="movie-title">
+                        {movie.title}
+                      </span>
+
+                      <span className="movie-details">
+                        {" "}
+                        ({movie.year})
+                        {" — "}
+                        Scare Rating:{" "}
+                        {
+                          movie.scare_rating
+                        }
+                        {" — "}
+                        {movie.subgenres
+                          .map(
+                            (
+                              subgenre
+                            ) =>
+                              subgenre.name
+                          )
+                          .join(", ")}
+                      </span>
+                    </div>
+                  </label>
                 )
-                .join(", ")}
-
+              )}
             </div>
 
-          ))}
+            {/* Voting controls */}
 
-          <br />
-
-          <button
-            onClick={handleSubmitVote}
-            disabled={
-              selectedMovieIds.length === 0 ||
-              isSubmitting
-            }
-          >
-            {isSubmitting
-              ? "Submitting..."
-              : "Submit Vote"
-            }
-          </button>
-          <button
-            onClick={() =>
-              navigate(
-                `/voting/${code}/results`,
-                {
-                  state: {
-                    from: "voting",
-                    user: user
-                  }
+            <div className="form-row">
+              <button
+                className="button-primary"
+                onClick={
+                  handleSubmitVote
                 }
-              )
-            }
-          >
-            View Results
-          </button>
-          {submitMessage && (
-            <p>{submitMessage}</p>
-          )}
+                disabled={
+                  selectedMovieIds.length ===
+                    0 ||
+                  isSubmitting ||
+                  !session.is_active
+                }
+              >
+                {isSubmitting
+                  ? "Submitting..."
+                  : `Submit Vote${
+                      selectedMovieIds.length >
+                      0
+                        ? ` (${selectedMovieIds.length})`
+                        : ""
+                    }`}
+              </button>
 
-          {submitError && (
-            <p>{submitError}</p>
-          )}
+              <button
+                onClick={() =>
+                  navigate(
+                    `/voting/${code}/results`,
+                    {
+                      state: {
+                        from: "voting",
+                      },
+                    }
+                  )
+                }
+              >
+                View Results
+              </button>
+            </div>
+
+            {/* Messages */}
+
+            {submitMessage && (
+              <p className="success-message">
+                {submitMessage}
+              </p>
+            )}
+
+            {submitError && (
+              <p className="error-message">
+                {submitError}
+              </p>
+            )}
+          </section>
         </>
       )}
-
-    </div>
-  )
+    </main>
+    </>
+  );
 }
 
-export default Voting
+export default Voting;
+

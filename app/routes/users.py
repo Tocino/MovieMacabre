@@ -1,9 +1,12 @@
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from app.database import get_db
 from app.services import user_service
 from sqlalchemy.orm import Session
-from app.schemas import UserCreate, UserResponse
+from app.schemas import UserCreate, UserLogin, UserResponse, TokenResponse
+from app.security import create_access_token
+from app.models import User
+from app.services.user_service import get_current_user
 
 router = APIRouter(
     prefix="/users",
@@ -27,6 +30,68 @@ def add_user(
     return user_service.add_user(db, user_data)
 
 
+
+# -----------------------------------------
+# GET ONE USER By Username
+# -----------------------------------------
+
+@router.get(
+    "/by-username/{username}",
+    response_model=UserResponse,
+)
+def get_user_by_username(
+    username: str,
+    db: Session = Depends(get_db)
+):
+    return user_service.get_user_by_username(db, username)
+
+
+# -----------------------------------------
+# AUTHENTICATE USER
+# -----------------------------------------
+
+@router.post(
+    "/login",
+    response_model=TokenResponse
+)
+def login(
+    login_data: UserLogin,
+    db: Session = Depends(get_db)
+):
+    user = user_service.authenticate_user(
+        db=db,
+        username=login_data.username,
+        password=login_data.password
+    )
+
+    if user is None:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid username or password"
+        )
+
+    access_token = create_access_token(
+        user.id
+    )
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+
+
+@router.get(
+    "/me",
+    response_model=UserResponse
+)
+def get_me(
+    current_user: User = Depends(
+        get_current_user
+    )
+):
+    return current_user
+
+
 # -----------------------------------------
 # GET ONE USER By ID
 # -----------------------------------------
@@ -42,17 +107,3 @@ def get_user(
 ):
     return user_service.get_user(db, user_id)
 
-
-# -----------------------------------------
-# GET ONE USER By Username
-# -----------------------------------------
-
-@router.get(
-    "/by-username/{username}",
-    response_model=UserResponse,
-)
-def get_user_by_username(
-    username: str,
-    db: Session = Depends(get_db)
-):
-    return user_service.get_user_by_username(db, username)

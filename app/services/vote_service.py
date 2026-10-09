@@ -108,6 +108,23 @@ def get_voting_results(
 
     rows = db.execute(statement).all()
 
+    voter_statement = (
+        select(
+            func.count(
+                func.distinct(Vote.user_id)
+            )
+        )
+        .where(
+            Vote.session_id ==
+            voting_session.id
+        )
+    )
+
+    total_voters = (
+        db.scalars(voter_statement).one()
+        or 0
+    )
+
     return {
         "session_name": voting_session.name,
         "code": voting_session.code,
@@ -118,7 +135,8 @@ def get_voting_results(
                 "votes": row.votes
             }
             for row in rows
-        ]
+        ],
+        "total_voters": total_voters
     }
 
 

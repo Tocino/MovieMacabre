@@ -8,6 +8,9 @@ from app.schemas import (
     AddMoviesToSession,
 )
 from app.services import voting_service
+from app.models import User
+from app.services import user_service
+from app.services.user_service import get_current_user
 
 
 router = APIRouter(
@@ -23,13 +26,22 @@ router = APIRouter(
 )
 def create_session(
     session_data: VotingSessionCreate,
+    current_admin: User = Depends(
+        user_service.require_admin
+    ),
     db: Session = Depends(get_db)
 ):
+    try:
+        return voting_service.create_voting_session(
+            db=db,
+            session_data=session_data
+        )
 
-    return voting_service.create_voting_session(
-        db,
-        session_data
-    )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        )
 
 
 @router.get(
@@ -54,6 +66,7 @@ def join_session(
 
     return voting_session
 
+
 @router.post(
     "/{code}/movies",
     response_model=VotingSessionResponse
@@ -61,13 +74,16 @@ def join_session(
 def add_movies_to_session(
     code: str,
     data: AddMoviesToSession,
+    current_admin: User = Depends(
+        user_service.require_admin
+    ),
     db: Session = Depends(get_db)
 ):
     try:
-        voting_session = voting_service.add_movies_to_session(
-            db,
-            code,
-            data.movie_ids
+        return voting_service.add_movies_to_session(
+            db=db,
+            code=code,
+            movie_ids=data.movie_ids
         )
 
     except ValueError as error:
@@ -76,13 +92,6 @@ def add_movies_to_session(
             detail=str(error)
         )
 
-    if voting_session is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Voting session not found"
-        )
-
-    return voting_session
 
 @router.post(
     "/{code}/removemovies",
@@ -91,27 +100,39 @@ def add_movies_to_session(
 def remove_movies_from_session(
     movie_ids: list[int],
     code: str,
+    current_admin: User = Depends(
+        user_service.require_admin
+    ),
     db: Session = Depends(get_db)
 ):
-
-    voting_session = voting_service.remove_movies_from_session(
-        db,
-        code,
-        movie_ids
-    )
-
-    if voting_session is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Voting session not found: {code}"
+    try:
+        voting_session = voting_service.remove_movies_from_session(
+            db=db,
+            code=code,
+            movie_ids=movie_ids
         )
 
-    return voting_session
+        if voting_session is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Voting session not found: {code}"
+            )
+
+        return voting_session
+
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        )
 
 
 @router.patch("/{code}/close")
 def close_voting(
     code: str,
+    current_admin: User = Depends(
+        user_service.require_admin
+    ),
     db: Session = Depends(get_db)
 ):
     try:
@@ -122,13 +143,17 @@ def close_voting(
 
     except ValueError as error:
         raise HTTPException(
-            status_code=404,
+            status_code=400,
             detail=str(error)
         )
+
 
 @router.patch("/{code}/open")
 def open_voting(
     code: str,
+    current_admin: User = Depends(
+        user_service.require_admin
+    ),
     db: Session = Depends(get_db)
 ):
     try:
@@ -139,6 +164,8 @@ def open_voting(
 
     except ValueError as error:
         raise HTTPException(
-            status_code=404,
+            status_code=400,
             detail=str(error)
         )
+
+    

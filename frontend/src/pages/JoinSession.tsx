@@ -1,77 +1,201 @@
-import { useState } from "react"
-import { createUser, getUserByUsername, getOrCreateUser, getVotingSession } from "../services/api"
-import { useNavigate } from "react-router-dom"
+
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  useNavigate,
+} from "react-router-dom";
+
+import {
+  getCurrentUser,
+  getVotingSession,
+  logoutUser
+} from "../services/api";
+
+import AppHeader from "../components/AppHeader";
 
 function JoinSession() {
-  const [username, setUsername] = useState("")
-  const [sessionCode, setSessionCode] = useState("")
-  const navigate = useNavigate()
-  const [error, setError] = useState("")
+  const [sessionCode, setSessionCode] =
+    useState("");
 
-async function handleJoin() {
-  try {
-    const user =
-      await getOrCreateUser(username)
+  const [username, setUsername] =
+    useState("");
 
-    const session =
-      await getVotingSession(sessionCode)
+  const [error, setError] =
+    useState("");
 
-    if (!session) {
-      setError("Invalid session code")
-      return
+  const [checkingAuth, setCheckingAuth] =
+    useState(true);
+
+  const navigate = useNavigate();
+
+  // -------------------------
+  // Check login
+  // -------------------------
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const currentUser =
+          await getCurrentUser();
+
+        setUsername(
+          currentUser.username
+        );
+      } catch {
+        sessionStorage.removeItem(
+          "access_token"
+        );
+
+        navigate("/login");
+      } finally {
+        setCheckingAuth(false);
+      }
     }
 
-    sessionStorage.setItem(
-      "user",
-      JSON.stringify(user)
-    )
-    navigate(
-      `/vote/${session.code}`,
-      {
-        state: {
-          user: user
-        }
+    checkAuth();
+  }, [navigate]);
+
+  // -------------------------
+  // Join session
+  // -------------------------
+
+  async function handleJoin() {
+    if (!sessionCode.trim()) {
+      setError(
+        "Please enter a session code"
+      );
+
+      return;
+    }
+
+    try {
+      setError("");
+
+      const session =
+        await getVotingSession(
+          sessionCode
+            .trim()
+            .toUpperCase()
+        );
+
+      if (!session) {
+        setError(
+          "Invalid session code"
+        );
+
+        return;
       }
-    )
 
-  } catch (error) {
-    console.error(error)
+      navigate(
+        `/vote/${session.code}`
+      );
+
+    } catch (error) {
+      console.error(error);
+
+      setError(
+        "Could not join session"
+      );
+    }
   }
-}
 
+  // -------------------------
+  // Loading
+  // -------------------------
 
+  if (checkingAuth) {
+    return (
+      <p>Checking login...</p>
+    );
+  }
+
+  function handleLogout() {
+    logoutUser();
+    navigate("/login");
+  }
+
+  // -------------------------
+  // Page
+  // -------------------------
 
   return (
-    <div>
-      <h1>MovieMacabre</h1>
-      <h2>Join Movie Night</h2>
+    <>
+    <AppHeader
+      username={username}
+    />
 
-      <div>
-        <label>Username</label>
+    <main className="join-page">
+      <div className="join-container">
+        <div className="join-header">
 
-        <input
-          type="text"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-        />
+          <p>
+            Join the movie night and
+            vote for what you want
+            to watch.
+          </p>
+        </div>
+
+        <section className="panel join-panel">
+          <h2>
+            Join Session
+          </h2>
+
+          <p>
+            Logged in as{" "}
+            <strong>
+              {username}
+            </strong>
+          </p>
+
+          <button
+            type="button"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+
+          <div className="join-field">
+            <label htmlFor="session-code">
+              Session Code
+            </label>
+
+            <input
+              id="session-code"
+              type="text"
+              placeholder="Enter session code"
+              value={sessionCode}
+              onChange={(event) =>
+                setSessionCode(
+                  event.target.value
+                    .toUpperCase()
+                )
+              }
+            />
+          </div>
+
+          {error && (
+            <p className="error-message">
+              {error}
+            </p>
+          )}
+
+          <button
+            className="button-primary join-button"
+            onClick={handleJoin}
+            disabled={
+              !sessionCode.trim()
+            }
+          >
+            Join Voting
+          </button>
+        </section>
       </div>
-
-      <div>
-        <label>Session Code</label>
-
-        <input
-          type="text"
-          value={sessionCode}
-          onChange={(event) => setSessionCode(event.target.value)}
-        />
-      </div>
-
-      <button onClick={handleJoin}>
-        Join Session
-      </button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-    </div>
-  )
+    </main>
+    </>
+  );
 }
 
-export default JoinSession
+export default JoinSession;

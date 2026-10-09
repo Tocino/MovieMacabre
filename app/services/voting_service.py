@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 from app.models import MovieSession, VotingSession, Movie
 from app.schemas import VotingSessionCreate
-
+from app.services.user_service import require_admin
 
 CODE_CHARACTERS = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
 
@@ -73,6 +73,7 @@ def add_movies_to_session(
     code: str,
     movie_ids: list[int]
 ):
+
     voting_session = get_session_by_code(db, code)
 
     if voting_session is None:

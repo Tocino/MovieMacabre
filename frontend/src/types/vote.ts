@@ -7,5 +7,6 @@ export type MovieResult = {
 export type VotingResults = {
   session_name: string
   code: string
+  total_voters: number
   results: MovieResult[]
 }

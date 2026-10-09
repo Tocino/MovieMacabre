@@ -76,7 +76,6 @@ class RemoveMoviesFromSession(BaseModel):
     movie_ids: list[int] = Field(min_length=1)
 
 class VoteCreate(BaseModel):
-    user_id: int
     movie_ids: list[int]
 
 class VoteResponse(BaseModel):
@@ -91,16 +90,24 @@ class VoteResponse(BaseModel):
 
 class UserCreate(BaseModel):
     username: str
-    is_admin: bool
-    is_active: bool
+    password: str
+
 
 class UserResponse(BaseModel):
     id: int
     username: str
+    is_admin: bool
+    is_active: bool
 
     model_config = {
         "from_attributes": True
     }
+
+
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
 
 class MovieResult(BaseModel):
     movie_id: int
@@ -112,3 +119,9 @@ class VotingResults(BaseModel):
     session_name: str
     code: str
     results: list[MovieResult]
+    total_voters: int
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str

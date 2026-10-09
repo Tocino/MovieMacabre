@@ -3,53 +3,6 @@ import type { VotingSession } from "../types/session"
 import type { Movie } from "../types/movie"
 import type { VotingResults } from "../types/vote"
 
-export async function createUser(username: string) {
-  const response = await fetch(`${API_URL}/users/`, {
-    method: "POST",
-
-    headers: {
-      "Content-Type": "application/json",
-    },
-
-    body: JSON.stringify({
-      username: username,
-      is_admin: false,
-      is_active: true,
-    }),
-  })
-
-  if (!response.ok) {
-    throw new Error("Failed to create user")
-  }
-
-  return response.json()
-}
-
-export async function getUserByUsername(username: string) {
-  const response = await fetch(
-    `${API_URL}/users/by-username/${username}`
-  )
-
-  if (response.status === 404) {
-    return null
-  }
-
-  if (!response.ok) {
-    throw new Error("Failed to get user")
-  }
-
-  return response.json()
-}
-
-export async function getOrCreateUser(username: string) {
-  const user = await getUserByUsername(username)
-
-  if (user) {
-    return user
-  }
-
-  return createUser(username)
-}
 
 export async function getVotingSession(
   code: string
@@ -72,29 +25,42 @@ export async function getVotingSession(
 
 export async function createVotingSession(
   name: string
-): Promise<VotingSession> {
+) {
+  const token =
+    sessionStorage.getItem(
+      "access_token"
+    );
 
-  const response = await fetch(
-    `${API_URL}/sessions/`,
-    {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-
-      body: JSON.stringify({
-        name: name,
-      }),
-    }
-  )
-
-  if (!response.ok) {
-    throw new Error("Failed to create voting session")
+  if (!token) {
+    throw new Error("Not logged in");
   }
 
-  return response.json()
+  const response = await fetch(
+    "http://localhost:8000/sessions/",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+
+    throw new Error(
+      error.detail ||
+      "Failed to create voting session"
+    );
+  }
+
+  return response.json();
 }
+
 
 export async function getMovies(): Promise<Movie[]> {
   const response = await fetch(
@@ -111,52 +77,83 @@ export async function getMovies(): Promise<Movie[]> {
 export async function addMoviesToSession(
   code: string,
   movieIds: number[]
-): Promise<VotingSession> {
+) {
+  const token =
+    sessionStorage.getItem(
+      "access_token"
+    );
+
+  if (!token) {
+    throw new Error("Not logged in");
+  }
 
   const response = await fetch(
-    `${API_URL}/sessions/${code}/movies`,
+    `http://localhost:8000/sessions/${code}/movies`,
     {
       method: "POST",
-
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-
       body: JSON.stringify({
         movie_ids: movieIds,
       }),
     }
-  )
+  );
 
   if (!response.ok) {
-    throw new Error("Failed to add movies to session")
+    const error = await response.json();
+
+    throw new Error(
+      error.detail ||
+      "Failed to add movies"
+    );
   }
 
-  return response.json()
+  return response.json();
 }
+
 
 export async function removeMoviesFromSession(
   code: string,
   movieIds: number[]
-): Promise<VotingSession> {
+) {
+  const token =
+    sessionStorage.getItem(
+      "access_token"
+    );
+
+  if (!token) {
+    throw new Error(
+      "Not logged in"
+    );
+  }
+
   const response = await fetch(
-    `${API_URL}/sessions/${code}/removemovies`,
+    `http://localhost:8000/sessions/${code}/removemovies`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(movieIds),
+      body: JSON.stringify(
+        movieIds
+      ),
     }
-  )
+  );
 
   if (!response.ok) {
+    const error =
+      await response.json();
+
     throw new Error(
-      "Failed to remove movies from session"
-    )
+      error.detail ||
+      "Failed to remove movies"
+    );
   }
 
-  return response.json()
+  return response.json();
 }
 
 
@@ -178,58 +175,250 @@ export async function getVotingResults(
 
 
 export async function getUserVotes(
-  code: string,
-  userId: number
-): Promise<number[]> {
+  code: string
+) {
+  const token =
+    sessionStorage.getItem(
+      "access_token"
+    );
 
-  const response = await fetch(
-    `http://localhost:8000/voting/${code}/votes/${userId}`
-  )
-
-  if (!response.ok) {
+  if (!token) {
     throw new Error(
-      "Failed to load user votes"
-    )
+      "Not logged in"
+    );
   }
 
-  return response.json()
+  const response = await fetch(
+    `http://localhost:8000/voting/${code}/votes`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+
+    throw new Error(
+      error.detail ||
+      "Failed to load votes"
+    );
+  }
+
+  return response.json();
 }
+
 
 export async function closeVoting(
   code: string
 ) {
+  const token =
+    sessionStorage.getItem(
+      "access_token"
+    );
+
+  if (!token) {
+    throw new Error(
+      "Not logged in"
+    );
+  }
+
   const response = await fetch(
     `http://localhost:8000/sessions/${code}/close`,
     {
-      method: "PATCH"
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
-  )
+  );
 
   if (!response.ok) {
+    const error = await response.json();
+
     throw new Error(
+      error.detail ||
       "Failed to close voting"
-    )
+    );
   }
 
-  return response.json()
+  return response.json();
 }
 
 
 export async function openVoting(
   code: string
 ) {
+  const token =
+    sessionStorage.getItem(
+      "access_token"
+    );
+
+  if (!token) {
+    throw new Error("Not logged in");
+  }
+
   const response = await fetch(
     `http://localhost:8000/sessions/${code}/open`,
     {
-      method: "PATCH"
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }
-  )
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+
+    throw new Error(
+      error.detail ||
+      "Failed to open voting"
+    );
+  }
+
+  return response.json();
+}
+
+
+export async function loginUser(
+  username: string,
+  password: string
+) {
+  const response = await fetch(
+    "http://localhost:8000/users/login",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+
+    throw new Error(
+      error.detail || "Login failed"
+    );
+  }
+
+  return response.json();
+}
+
+
+export async function getCurrentUser() {
+  const token =
+    sessionStorage.getItem(
+      "access_token"
+    );
+
+  if (!token) {
+    throw new Error(
+      "Not logged in"
+    );
+  }
+
+  const response = await fetch(
+    "http://localhost:8000/users/me",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   if (!response.ok) {
     throw new Error(
-      "Failed to open voting"
-    )
+      "Unable to get current user"
+    );
   }
 
-  return response.json()
+  return response.json();
+}
+
+
+export async function castVote(
+  code: string,
+  movieIds: number[]
+) {
+  const token =
+    sessionStorage.getItem(
+      "access_token"
+    );
+
+  if (!token) {
+    throw new Error(
+      "Not logged in"
+    );
+  }
+
+  const response = await fetch(
+    `http://localhost:8000/voting/${code}/votes`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        movie_ids: movieIds,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const error =
+      await response.json();
+
+    throw new Error(
+      error.detail ||
+      "Failed to submit vote"
+    );
+  }
+
+  return response.json();
+}
+
+
+export async function registerUser(
+  username: string,
+  password: string
+) {
+  const response = await fetch(
+    "http://localhost:8000/users/",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.json();
+
+    throw new Error(
+      error.detail ||
+      "Failed to create account"
+    );
+  }
+
+  return response.json();
+}
+
+
+export function logoutUser() {
+  sessionStorage.removeItem(
+    "access_token"
+  );
 }

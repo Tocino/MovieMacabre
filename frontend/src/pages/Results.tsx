@@ -10,16 +10,21 @@ import {
 } from "react-router-dom"
 
 import {
-  getVotingResults
+  getCurrentUser,
+  getVotingResults,
 } from "../services/api"
 
 import type {
   VotingResults
 } from "../types/vote"
 
+import AppHeader from "../components/AppHeader";
 
 
 function Results() {
+
+    const [username, setUsername] =
+      useState("");
 
     const { code } = useParams()
 
@@ -50,6 +55,27 @@ function Results() {
 
   }, [code])
 
+  useEffect(() => {
+  async function checkAuth() {
+    try {
+      const currentUser =
+        await getCurrentUser();
+
+      setUsername(
+        currentUser.username
+      );
+    } catch {
+      sessionStorage.removeItem(
+        "access_token"
+      );
+
+      navigate("/login");
+    }
+  }
+
+  checkAuth();
+}, [navigate]);
+
 function handleBack() {
 
   if (from === "admin") {
@@ -67,50 +93,146 @@ function handleBack() {
   )
 }
 
-  return (
-    <div>
+return (
+  <>
+    <AppHeader
+      username={username}
+    />
+  <main className="app-page">
 
-      <h1>MovieMacabre</h1>
 
-      <h2>Voting Results</h2>
+    {!results && (
+      <section className="panel">
+        <p>Loading results...</p>
+      </section>
+    )}
 
-      {results && (
-        <>
+    {results && (
+      <>
+        <section className="panel">
 
-          <h3>
-            {results.session_name}
-          </h3>
+          <h2>{results.session_name}</h2>
 
-          {results.results.map(
-            (movie, index) => (
+          <p>
+            Session Code:{" "}
+            <strong>{results.code}</strong>
+          </p>
 
-              <div key={movie.movie_id}>
+          <div className="stats">
 
-                <strong>
-                  {index + 1}. {movie.title}
-                </strong>
+            <div className="stat-card">
+              <span className="stat-label">
+                Voters
+              </span>
 
-                {" — "}
+              <span className="stat-value">
+                {results.total_voters}
+              </span>
+            </div>
 
-                {movie.votes === 1
-                  ? "1 vote"
-                  : `${movie.votes} votes`
-                }
+            <div className="stat-card">
+              <span className="stat-label">
+                Movies
+              </span>
 
-              </div>
+              <span className="stat-value">
+                {results.results.length}
+              </span>
+            </div>
 
-            )
-          )}
-            <br />
+            <div className="stat-card">
+              <span className="stat-label">
+                Total Votes
+              </span>
 
+              <span className="stat-value">
+                {results.results.reduce(
+                  (total, movie) =>
+                    total + movie.votes,
+                  0
+                )}
+              </span>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <section className="panel">
+
+          <h2>Results</h2>
+
+          <div className="results-list">
+
+            {results.results.map(
+              (movie, index) => {
+
+                const highestVotes =
+                  results.results[0]?.votes ?? 0
+
+                const percentage =
+                  highestVotes === 0
+                    ? 0
+                    : (
+                        movie.votes /
+                        highestVotes
+                      ) * 100
+
+                return (
+                  <div
+                    className="result-row"
+                    key={movie.movie_id}
+                  >
+
+                    <div className="result-heading">
+
+                      <span className="result-title">
+                        {index + 1}.{" "}
+                        {movie.title}
+                      </span>
+
+                      <span className="result-votes">
+                        {movie.votes}{" "}
+                        {movie.votes === 1
+                          ? "vote"
+                          : "votes"}
+                      </span>
+
+                    </div>
+
+                    <div className="result-bar">
+
+                      <div
+                        className="result-bar-fill"
+                        style={{
+                          width:
+                            `${percentage}%`
+                        }}
+                      />
+
+                    </div>
+
+                  </div>
+                )
+              }
+            )}
+
+          </div>
+
+          <div className="form-row">
             <button onClick={handleBack}>
-            Back
+              Back
             </button>
-        </>
-      )}
+          </div>
 
-    </div>
-  )
+        </section>
+      </>
+    )}
+
+  </main>
+  </>
+);
 }
 
 
