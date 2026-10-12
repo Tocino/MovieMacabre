@@ -196,3 +196,18 @@ def open_voting(
     db.refresh(voting_session)
 
     return voting_session
+
+
+def get_voting_sessions(
+    db: Session
+):
+    statement = (
+        select(VotingSession)
+        .order_by(
+            VotingSession.id.desc()
+        )
+    )
+
+    return list(
+        db.scalars(statement).all()
+    )

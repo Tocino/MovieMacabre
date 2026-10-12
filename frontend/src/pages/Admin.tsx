@@ -1,6 +1,12 @@
+import {
+  useEffect,
+  useState,
+} from "react";
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+  useOutletContext,
+} from "react-router-dom";
 
 import {
   createVotingSession,
@@ -11,80 +17,137 @@ import {
   closeVoting,
   openVoting,
   getVotingResults,
-  getCurrentUser,
+  getVotingSessions,
+  generateSessionMovies,
+  getSubgenres,
+  setMovieWatched,
 } from "../services/api";
 
-import type { VotingSession } from "../types/session";
-import type { Movie } from "../types/movie";
-import type { VotingResults } from "../types/vote";
+import type {
+  Subgenre,
+} from "../types/subgenre";
+
+import type {
+  VotingSession,
+} from "../types/session";
+
+import type {
+  Movie,
+} from "../types/movie";
+
+import type {
+  VotingResults,
+} from "../types/vote";
+
+import type {
+  User,
+} from "../types/user";
+
 import AppHeader from "../components/AppHeader";
 
+
 function Admin() {
+  const { user } =
+    useOutletContext<{
+      user: User;
+    }>();
+
+  const navigate = useNavigate();
+
+
   // -------------------------
-  // State
+  // Session state
   // -------------------------
 
-  const [sessionName, setSessionName] =
-    useState("");
+  const [
+    sessionName,
+    setSessionName,
+  ] = useState("");
 
-  const [sessionCode, setSessionCode] =
-    useState("");
+  const [
+    sessionCode,
+    setSessionCode,
+  ] = useState("");
 
-  const [session, setSession] =
-    useState<VotingSession | null>(null);
+  const [
+    session,
+    setSession,
+  ] = useState<VotingSession | null>(
+    null
+  );
 
-  const [movies, setMovies] =
-    useState<Movie[]>([]);
+  const [
+    votingSessions,
+    setVotingSessions,
+  ] = useState<VotingSession[]>([]);
+
+
+  // -------------------------
+  // Movie state
+  // -------------------------
+
+  const [
+    movies,
+    setMovies,
+  ] = useState<Movie[]>([]);
 
   const [
     selectedMovieIds,
     setSelectedMovieIds,
   ] = useState<number[]>([]);
 
-  const [error, setError] =
-    useState("");
+
+  // -------------------------
+  // Generator state
+  // -------------------------
+
+  const [
+    subgenres,
+    setSubgenres,
+  ] = useState<Subgenre[]>([]);
+
+  const [
+    selectedSubgenreIds,
+    setSelectedSubgenreIds,
+  ] = useState<number[]>([]);
+
+  const [
+    movieCount,
+    setMovieCount,
+  ] = useState(6);
+
+  const [
+    minScareRating,
+    setMinScareRating,
+  ] = useState(3);
+
+  const [
+    excludeWatched,
+    setExcludeWatched,
+  ] = useState(true);
+
+  const [
+    isGenerating,
+    setIsGenerating,
+  ] = useState(false);
+
+
+  // -------------------------
+  // Results / errors
+  // -------------------------
+
+  const [
+    error,
+    setError,
+  ] = useState("");
 
   const [
     votingResults,
     setVotingResults,
-  ] = useState<VotingResults | null>(null);
+  ] = useState<VotingResults | null>(
+    null
+  );
 
-  const [checkingAuth, setCheckingAuth] =
-    useState(true);
-
-  const navigate = useNavigate();
-
-const [username, setUsername] =
-  useState("");
-
-  // -------------------------
-  // Authentication
-  // -------------------------
-
-  useEffect(() => {
-    async function checkAuth() {
-      try {
-        const currentUser =
-          await getCurrentUser();
-
-        if (!currentUser.is_admin) {
-          navigate("/login");
-          return;
-        }
-        setUsername(currentUser.username)
-      } catch {
-        sessionStorage.removeItem(
-          "access_token"
-        );
-
-        navigate("/login");
-      } finally {
-        setCheckingAuth(false);
-      }
-    }
-
-    checkAuth();
-  }, [navigate]);
 
   // -------------------------
   // Load movies
@@ -107,6 +170,66 @@ const [username, setUsername] =
     }
   }
 
+
+  // -------------------------
+  // Load voting sessions
+  // -------------------------
+
+  async function loadSessions() {
+    try {
+      const sessions =
+        await getVotingSessions();
+
+      setVotingSessions(
+        sessions
+      );
+    } catch (error) {
+      console.error(
+        "Failed to load sessions:",
+        error
+      );
+    }
+  }
+
+
+  // -------------------------
+  // Initial data
+  // -------------------------
+
+  useEffect(() => {
+    loadMovies();
+    loadSessions();
+  }, []);
+
+
+  useEffect(() => {
+    async function loadSubgenres() {
+      try {
+        const data =
+          await getSubgenres();
+
+        setSubgenres(data);
+
+        // Select all subgenres
+        // by default.
+        setSelectedSubgenreIds(
+          data.map(
+            (subgenre) =>
+              subgenre.id
+          )
+        );
+      } catch (error) {
+        console.error(
+          "Failed to load subgenres:",
+          error
+        );
+      }
+    }
+
+    loadSubgenres();
+  }, []);
+
+
   // -------------------------
   // Voting results
   // -------------------------
@@ -116,14 +239,19 @@ const [username, setUsername] =
       return;
     }
 
-    const code = session.code;
+    const code =
+      session.code;
 
     async function refreshResults() {
       try {
         const results =
-          await getVotingResults(code);
+          await getVotingResults(
+            code
+          );
 
-        setVotingResults(results);
+        setVotingResults(
+          results
+        );
       } catch (error) {
         console.error(
           "Failed to refresh voting results:",
@@ -132,10 +260,10 @@ const [username, setUsername] =
       }
     }
 
-    // Load immediately
+    // Load immediately.
     refreshResults();
 
-    // Refresh every 5 seconds
+    // Then refresh every 5 seconds.
     const intervalId =
       setInterval(
         refreshResults,
@@ -143,9 +271,12 @@ const [username, setUsername] =
       );
 
     return () => {
-      clearInterval(intervalId);
+      clearInterval(
+        intervalId
+      );
     };
   }, [session?.code]);
+
 
   // -------------------------
   // Create session
@@ -163,11 +294,20 @@ const [username, setUsername] =
     try {
       const newSession =
         await createVotingSession(
-          sessionName
+          sessionName.trim()
         );
 
       setSession(newSession);
+
+      setSessionCode(
+        newSession.code
+      );
+
       setVotingResults(null);
+      setSelectedMovieIds([]);
+
+      await loadSessions();
+
       setError("");
     } catch (error) {
       console.error(error);
@@ -178,12 +318,21 @@ const [username, setUsername] =
     }
   }
 
+
   // -------------------------
   // Load existing session
   // -------------------------
 
-  async function handleLoadSession() {
-    if (!sessionCode.trim()) {
+  async function handleLoadSession(
+    code?: string
+  ) {
+    const codeToLoad =
+      code ??
+      sessionCode
+        .trim()
+        .toUpperCase();
+
+    if (!codeToLoad) {
       setError(
         "Please enter a session code"
       );
@@ -194,9 +343,7 @@ const [username, setUsername] =
     try {
       const existingSession =
         await getVotingSession(
-          sessionCode
-            .trim()
-            .toUpperCase()
+          codeToLoad
         );
 
       if (!existingSession) {
@@ -207,7 +354,14 @@ const [username, setUsername] =
         return;
       }
 
-      setSession(existingSession);
+      setSession(
+        existingSession
+      );
+
+      setSessionCode(
+        existingSession.code
+      );
+
       setVotingResults(null);
       setSelectedMovieIds([]);
       setError("");
@@ -220,6 +374,7 @@ const [username, setUsername] =
     }
   }
 
+
   // -------------------------
   // Select movies
   // -------------------------
@@ -230,7 +385,9 @@ const [username, setUsername] =
     setSelectedMovieIds(
       (currentIds) => {
         if (
-          currentIds.includes(movieId)
+          currentIds.includes(
+            movieId
+          )
         ) {
           return currentIds.filter(
             (id) =>
@@ -245,6 +402,7 @@ const [username, setUsername] =
       }
     );
   }
+
 
   // -------------------------
   // Add movies
@@ -276,7 +434,10 @@ const [username, setUsername] =
           selectedMovieIds
         );
 
-      setSession(updatedSession);
+      setSession(
+        updatedSession
+      );
+
       setSelectedMovieIds([]);
       setError("");
     } catch (error) {
@@ -287,6 +448,7 @@ const [username, setUsername] =
       );
     }
   }
+
 
   // -------------------------
   // Remove movie
@@ -306,7 +468,10 @@ const [username, setUsername] =
           [movieId]
         );
 
-      setSession(updatedSession);
+      setSession(
+        updatedSession
+      );
+
       setError("");
     } catch (error) {
       console.error(error);
@@ -316,6 +481,119 @@ const [username, setUsername] =
       );
     }
   }
+
+
+  // -------------------------
+  // Subgenre selection
+  // -------------------------
+
+  function toggleSubgenre(
+    subgenreId: number
+  ) {
+    setSelectedSubgenreIds(
+      (current) => {
+        if (
+          current.includes(
+            subgenreId
+          )
+        ) {
+          return current.filter(
+            (id) =>
+              id !== subgenreId
+          );
+        }
+
+        return [
+          ...current,
+          subgenreId,
+        ];
+      }
+    );
+  }
+
+
+  // -------------------------
+  // Generate movies
+  // -------------------------
+
+  async function handleGenerateMovies() {
+    if (!session) {
+      setError(
+        "Create or load a session first"
+      );
+
+      return;
+    }
+
+    if (
+      selectedSubgenreIds.length === 0
+    ) {
+      setError(
+        "Select at least one subgenre"
+      );
+
+      return;
+    }
+
+    if (
+      movieCount < 1
+    ) {
+      setError(
+        "Movie count must be at least 1"
+      );
+
+      return;
+    }
+
+    try {
+      setIsGenerating(true);
+      setError("");
+
+      const updatedSession =
+        await generateSessionMovies(
+          session.code,
+          {
+            movie_count:
+              movieCount,
+
+            min_scare_rating:
+              minScareRating,
+
+            exclude_watched:
+              excludeWatched,
+
+            subgenre_ids:
+              selectedSubgenreIds,
+          }
+        );
+
+      setSession(
+        updatedSession
+      );
+
+      setSelectedMovieIds([]);
+    } catch (error) {
+      console.error(
+        "Failed to generate movies:",
+        error
+      );
+
+      if (
+        error instanceof Error
+      ) {
+        setError(
+          error.message
+        );
+      } else {
+        setError(
+          "Could not generate movies"
+        );
+      }
+    } finally {
+      setIsGenerating(false);
+    }
+  }
+
 
   // -------------------------
   // Open / close voting
@@ -329,7 +607,9 @@ const [username, setUsername] =
     try {
       let updatedSession;
 
-      if (session.is_active) {
+      if (
+        session.is_active
+      ) {
         updatedSession =
           await closeVoting(
             session.code
@@ -341,7 +621,12 @@ const [username, setUsername] =
           );
       }
 
-      setSession(updatedSession);
+      setSession(
+        updatedSession
+      );
+
+      await loadSessions();
+
       setError("");
     } catch (error) {
       console.error(
@@ -355,22 +640,26 @@ const [username, setUsername] =
     }
   }
 
+
   // -------------------------
   // Available movies
   // -------------------------
 
   const availableMovies =
-    movies.filter((movie) => {
-      if (!session) {
-        return true;
-      }
+    movies.filter(
+      (movie) => {
+        if (!session) {
+          return true;
+        }
 
-      return !session.movies.some(
-        (sessionMovie) =>
-          sessionMovie.id ===
-          movie.id
-      );
-    });
+        return !session.movies.some(
+          (sessionMovie) =>
+            sessionMovie.id ===
+            movie.id
+        );
+      }
+    );
+
 
   // -------------------------
   // Dashboard statistics
@@ -395,346 +684,668 @@ const [username, setUsername] =
         highestVoteCount > 0
     ) ?? [];
 
-  // -------------------------
-  // Authentication loading
-  // -------------------------
 
-  if (checkingAuth) {
-    return (
-      <p>Checking login...</p>
+async function handleWatchedStatus(
+  movieId: number,
+  watched: boolean
+) {
+  try {
+    await setMovieWatched(
+      movieId,
+      watched
+    );
+
+    // Update the main movie list.
+    setMovies(
+      (currentMovies) =>
+        currentMovies.map(
+          (movie) =>
+            movie.id === movieId
+              ? {
+                  ...movie,
+                  watched,
+                }
+              : movie
+        )
+    );
+
+    // Update the currently loaded
+    // session as well.
+    setSession(
+      (currentSession) => {
+        if (!currentSession) {
+          return null;
+        }
+
+        return {
+          ...currentSession,
+          movies:
+            currentSession.movies.map(
+              (movie) =>
+                movie.id === movieId
+                  ? {
+                      ...movie,
+                      watched,
+                    }
+                  : movie
+            ),
+        };
+      }
+    );
+
+    setError("");
+  } catch (error) {
+    console.error(
+      "Failed to update watched status:",
+      error
+    );
+
+    setError(
+      "Could not update watched status"
     );
   }
+}
+
 
   // -------------------------
   // Page
   // -------------------------
 
   return (
-  <>
-    <AppHeader
-      username={username}
-    />
+    <>
+      <AppHeader
+        username={user.username}
+      />
 
-    <main className="app-page">
+      <main className="app-page">
 
-      {/* Session setup */}
-      <section className="panel">
-        <h2>Session Management</h2>
+        {/* Session Management */}
 
-        <h3>Load Existing Session</h3>
-
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="Session Code"
-            value={sessionCode}
-            onChange={(event) =>
-              setSessionCode(
-                event.target.value
-              )
-            }
-          />
-
-          <button
-            className="button-primary"
-            onClick={
-              handleLoadSession
-            }
-          >
-            Load Session
-          </button>
-        </div>
-
-        <h3>
-          Create Voting Session
-        </h3>
-
-        <div className="form-row">
-          <input
-            type="text"
-            placeholder="Session Name"
-            value={sessionName}
-            onChange={(event) =>
-              setSessionName(
-                event.target.value
-              )
-            }
-          />
-
-          <button
-            className="button-primary"
-            onClick={
-              handleCreateSession
-            }
-          >
-            Create Session
-          </button>
-        </div>
-
-        {error && (
-          <p className="error-message">
-            {error}
-          </p>
-        )}
-      </section>
-
-      {/* Current session */}
-      {session && (
         <section className="panel">
-          <h2>{session.name}</h2>
-
-          <p>
-            Session Code:{" "}
-            <strong>
-              {session.code}
-            </strong>
-          </p>
-
-          <p>
-            Status:{" "}
-            <span
-              className={
-                session.is_active
-                  ? "status-active"
-                  : "status-inactive"
-              }
-            >
-              {session.is_active
-                ? "● Active"
-                : "● Closed"}
-            </span>
-          </p>
-
-          {/* Stats */}
-          <div className="stats">
-            <div className="stat-card">
-              <span className="stat-label">
-                Movies
-              </span>
-
-              <span className="stat-value">
-                {
-                  session.movies
-                    .length
-                }
-              </span>
-            </div>
-
-            <div className="stat-card">
-              <span className="stat-label">
-                Voters
-              </span>
-
-              <span className="stat-value">
-                {votingResults
-                  ?.total_voters ?? 0}
-              </span>
-            </div>
-
-            <div className="stat-card">
-              <span className="stat-label">
-                Total Votes
-              </span>
-
-              <span className="stat-value">
-                {totalVotes}
-              </span>
-            </div>
-
-            <div className="stat-card">
-              <span className="stat-label">
-                Current Leader
-              </span>
-
-              <span className="stat-value">
-                {leaders.length === 0
-                  ? "No votes"
-                  : leaders.length ===
-                      1
-                    ? leaders[0]
-                        .title
-                    : "Tie"}
-              </span>
-            </div>
-          </div>
-
-          {/* Session controls */}
-          <div className="form-row">
-            <button
-              className={
-                session.is_active
-                  ? "button-danger"
-                  : "button-primary"
-              }
-              onClick={
-                handleVotingStatus
-              }
-            >
-              {session.is_active
-                ? "Close Voting"
-                : "Open Voting"}
-            </button>
-
-            <button
-              onClick={() =>
-                navigate(
-                  `/voting/${session.code}/results`,
-                  {
-                    state: {
-                      from: "admin",
-                    },
-                  }
-                )
-              }
-            >
-              View Results
-            </button>
-          </div>
-
-          {/* Session movies */}
-          <h3>
-            Movies in Session
-          </h3>
-
-          {session.movies.length ===
-          0 ? (
-            <p>
-              No movies added yet.
-            </p>
-          ) : (
-            <div className="movie-list">
-              {session.movies.map(
-                (movie) => (
-                  <div
-                    className="movie-row"
-                    key={movie.id}
-                  >
-                    <div>
-                      <span className="movie-title">
-                        {movie.title}
-                      </span>
-
-                      <span className="movie-details">
-                        {" "}
-                        ({movie.year})
-                        {" — "}
-                        Scare Rating:{" "}
-                        {
-                          movie.scare_rating
-                        }
-                        {" — "}
-                        {movie.subgenres
-                          .map(
-                            (
-                              subgenre
-                            ) =>
-                              subgenre.name
-                          )
-                          .join(", ")}
-                      </span>
-                    </div>
-
-                    <div className="movie-actions">
-                      <button
-                        className="button-danger"
-                        onClick={() =>
-                          handleRemoveMovie(
-                            movie.id
-                          )
-                        }
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Available movies */}
-      <section className="panel">
-        <div className="form-row">
           <h2>
-            Available Movies
+            Session Management
           </h2>
 
-          <button
-            onClick={loadMovies}
-          >
-            Refresh
-          </button>
-        </div>
+          <h3>
+            Load Existing Session
+          </h3>
 
-        <div className="movie-list">
-          {availableMovies.map(
-            (movie) => (
-              <label
-                className="movie-row"
-                key={movie.id}
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="Session Code"
+              value={sessionCode}
+              onChange={(event) =>
+                setSessionCode(
+                  event.target.value
+                    .toUpperCase()
+                )
+              }
+            />
+
+            <button
+              type="button"
+              onClick={() =>
+                handleLoadSession()
+              }
+            >
+              Load Session
+            </button>
+          </div>
+
+          <h3>
+            Create Voting Session
+          </h3>
+
+          <div className="form-row">
+            <input
+              type="text"
+              placeholder="Session Name"
+              value={sessionName}
+              onChange={(event) =>
+                setSessionName(
+                  event.target.value
+                )
+              }
+            />
+
+            <button
+              type="button"
+              className="button-primary"
+              onClick={
+                handleCreateSession
+              }
+            >
+              Create Session
+            </button>
+          </div>
+
+          {error && (
+            <p className="error-message">
+              {error}
+            </p>
+          )}
+        </section>
+
+
+        {/* Generate Ballot */}
+
+        {session && (
+          <section className="panel">
+            <h2>
+              Generate Ballot
+            </h2>
+
+            <div className="form-row">
+              <label>
+                Number of Movies
+              </label>
+
+              <input
+                type="number"
+                min="1"
+                max="20"
+                value={movieCount}
+                onChange={(event) =>
+                  setMovieCount(
+                    Number(
+                      event.target.value
+                    )
+                  )
+                }
+              />
+            </div>
+
+            <div className="form-row">
+              <label>
+                Minimum Scare Rating
+              </label>
+
+              <select
+                value={
+                  minScareRating
+                }
+                onChange={(event) =>
+                  setMinScareRating(
+                    Number(
+                      event.target.value
+                    )
+                  )
+                }
               >
-                <input
-                  type="checkbox"
-                  checked={selectedMovieIds.includes(
-                    movie.id
-                  )}
-                  onChange={() =>
-                    toggleMovie(
-                      movie.id
+                <option value={1}>
+                  1+
+                </option>
+
+                <option value={2}>
+                  2+
+                </option>
+
+                <option value={3}>
+                  3+
+                </option>
+
+                <option value={4}>
+                  4+
+                </option>
+
+                <option value={5}>
+                  5
+                </option>
+              </select>
+            </div>
+
+            <label>
+              <input
+                type="checkbox"
+                checked={
+                  excludeWatched
+                }
+                onChange={(event) =>
+                  setExcludeWatched(
+                    event.target.checked
+                  )
+                }
+              />
+
+              {" "}
+              Exclude watched movies
+            </label>
+            <div className="generator-subgenres">
+              <h3>
+                Subgenres
+              </h3>
+
+              <div className="form-row">
+                <button
+                  type="button"
+                  className="button-secondary"
+                  onClick={() =>
+                    setSelectedSubgenreIds(
+                      subgenres.map(
+                        (subgenre) =>
+                          subgenre.id
+                      )
                     )
                   }
-                />
+                >
+                  Select All
+                </button>
 
-                <div>
-                  <span className="movie-title">
-                    {movie.title}
-                  </span>
+                <button
+                  type="button"
+                  className="button-secondary"
+                  onClick={() =>
+                    setSelectedSubgenreIds([])
+                  }
+                >
+                  Clear All
+                </button>
+              </div>
 
-                  <span className="movie-details">
-                    {" "}
-                    ({movie.year})
-                    {" — "}
-                    Scare Rating:{" "}
+  {subgenres.map(
+    (subgenre) => (
+      <label
+        key={subgenre.id}
+        className="subgenre-option"
+      >
+        <input
+          type="checkbox"
+          checked={
+            selectedSubgenreIds.includes(
+              subgenre.id
+            )
+          }
+          onChange={() =>
+            toggleSubgenre(
+              subgenre.id
+            )
+          }
+        />
+
+        {" "}
+        {subgenre.name}
+      </label>
+    )
+  )}
+</div>
+
+            <button
+              type="button"
+              className="button-primary"
+              onClick={
+                handleGenerateMovies
+              }
+              disabled={
+                isGenerating ||
+                !session.is_active ||
+                selectedSubgenreIds
+                  .length === 0
+              }
+            >
+              {isGenerating
+                ? "Generating..."
+                : "Generate Movies"}
+            </button>
+          </section>
+        )}
+
+
+        {/* Current Session */}
+
+        {session && (
+          <section className="panel">
+            <h2>
+              {session.name}
+            </h2>
+
+            <p>
+              Session Code:{" "}
+              <strong>
+                {session.code}
+              </strong>
+            </p>
+
+            <p>
+              Status:{" "}
+
+              <span
+                className={
+                  session.is_active
+                    ? "status-active"
+                    : "status-inactive"
+                }
+              >
+                {session.is_active
+                  ? "● Active"
+                  : "● Closed"}
+              </span>
+            </p>
+
+
+            {/* Stats */}
+
+            <div className="stats">
+              <div className="stat-card">
+                <span className="stat-label">
+                  Movies
+                </span>
+
+                <span className="stat-value">
+                  {
+                    session.movies
+                      .length
+                  }
+                </span>
+              </div>
+
+              <div className="stat-card">
+                <span className="stat-label">
+                  Voters
+                </span>
+
+                <span className="stat-value">
+                  {votingResults
+                    ?.total_voters ?? 0}
+                </span>
+              </div>
+
+              <div className="stat-card">
+                <span className="stat-label">
+                  Total Votes
+                </span>
+
+                <span className="stat-value">
+                  {totalVotes}
+                </span>
+              </div>
+
+              <div className="stat-card">
+                <span className="stat-label">
+                  Current Leader
+                </span>
+
+                <span className="stat-value">
+                  {leaders.length === 0
+                    ? "No votes"
+                    : leaders.length === 1
+                      ? leaders[0]
+                          .title
+                      : "Tie"}
+                </span>
+              </div>
+            </div>
+
+
+            {/* Session Controls */}
+
+            <div className="form-row">
+              <button
+                type="button"
+                className={
+                  session.is_active
+                    ? "button-danger"
+                    : "button-primary"
+                }
+                onClick={
+                  handleVotingStatus
+                }
+              >
+                {session.is_active
+                  ? "Close Voting"
+                  : "Open Voting"}
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  navigate(
+                    `/voting/${session.code}/results`,
                     {
-                      movie.scare_rating
+                      state: {
+                        from:
+                          "admin",
+                      },
+                    }
+                  )
+                }
+              >
+                View Results
+              </button>
+            </div>
+
+
+            {/* Session Movies */}
+
+            <h3>
+              Movies in Session
+            </h3>
+
+            {session.movies.length ===
+            0 ? (
+              <p>
+                No movies added yet.
+              </p>
+            ) : (
+              <div className="movie-list">
+                {session.movies.map(
+                  (movie) => (
+                    <div
+                      className="movie-row"
+                      key={movie.id}
+                    >
+                      <div>
+                        <span className="movie-title">
+                          {movie.title}
+                        </span>
+
+                        <span className="movie-details">
+                          {" "}
+                          ({movie.year})
+                          {" — "}
+                          Scare Rating:{" "}
+                          {
+                            movie.scare_rating
+                          }
+                          {" — "}
+                          {movie.subgenres
+                            .map(
+                              (
+                                subgenre
+                              ) =>
+                                subgenre.name
+                            )
+                            .join(", ")}
+                        </span>
+                      </div>
+                      <div className="movie-actions">
+                        <button
+                          type="button"
+                          className="button-secondary"
+                          onClick={() =>
+                            handleWatchedStatus(
+                              movie.id,
+                              !movie.watched
+                            )
+                          }
+                        >
+                          {movie.watched
+                            ? "Mark Unwatched"
+                            : "Mark Watched"}
+                        </button>
+
+                        <button
+                          type="button"
+                          className="button-danger"
+                          onClick={() =>
+                            handleRemoveMovie(
+                              movie.id
+                            )
+                          }
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            )}
+          </section>
+        )}
+
+
+        {/* Available Movies */}
+
+        <section className="panel">
+          <div className="form-row">
+            <h2>
+              Available Movies
+            </h2>
+
+            <button
+              type="button"
+              onClick={
+                loadMovies
+              }
+            >
+              Refresh
+            </button>
+          </div>
+
+          <div className="movie-list">
+            {availableMovies.map(
+              (movie) => (
+                <label
+                  className={`movie-row ${
+                    selectedMovieIds.includes(movie.id)
+                      ? "movie-row-selected"
+                      : ""
+                  }`}
+                  key={movie.id}
+                >
+                  <input
+                    type="checkbox"
+                    checked={
+                      selectedMovieIds.includes(
+                        movie.id
+                      )
+                    }
+                    onChange={() =>
+                      toggleMovie(
+                        movie.id
+                      )
+                    }
+                  />
+
+                  <div>
+                    <span className="movie-title">
+                      {movie.title}
+                    </span>
+
+                    <span className="movie-details">
+                      {" "}
+                      ({movie.year})
+                      {" — "}
+                      Scare Rating:{" "}
+                      {
+                        movie.scare_rating
+                      }
+                      {" — "}
+                      {movie.subgenres
+                        .map(
+                          (
+                            subgenre
+                          ) =>
+                            subgenre.name
+                        )
+                        .join(", ")}
+                    </span>
+                  </div>
+                </label>
+              )
+            )}
+          </div>
+
+          <div className="form-row">
+            <button
+              type="button"
+              className="button-primary"
+              onClick={
+                handleAddMovies
+              }
+              disabled={
+                selectedMovieIds
+                  .length === 0
+              }
+            >
+              Add Selected Movies
+
+              {selectedMovieIds.length >
+                0 &&
+                ` (${selectedMovieIds.length})`}
+            </button>
+          </div>
+        </section>
+
+
+        {/* Previous Sessions */}
+
+        <section className="panel">
+          <h2>
+            Previous Sessions
+          </h2>
+
+          {votingSessions.length ===
+          0 ? (
+            <p>
+              No sessions yet.
+            </p>
+          ) : (
+            votingSessions.map(
+              (votingSession) => (
+                <div
+                  key={
+                    votingSession.id
+                  }
+                  className="session-history-row"
+                >
+                  <div>
+                    <strong>
+                      {
+                        votingSession.name
+                      }
+                    </strong>
+
+                    {" — "}
+                    {
+                      votingSession.code
                     }
                     {" — "}
-                    {movie.subgenres
-                      .map(
-                        (
-                          subgenre
-                        ) =>
-                          subgenre.name
+
+                    {votingSession.is_active
+                      ? "Active"
+                      : "Closed"}
+                  </div>
+
+                  <button
+                    type="button"
+                    className="button-secondary"
+                    onClick={() =>
+                      handleLoadSession(
+                        votingSession.code
                       )
-                      .join(", ")}
-                  </span>
+                    }
+                  >
+                    Load
+                  </button>
                 </div>
-              </label>
+              )
             )
           )}
-        </div>
+        </section>
 
-        <div className="form-row">
-          <button
-            className="button-primary"
-            onClick={
-              handleAddMovies
-            }
-            disabled={
-              selectedMovieIds.length ===
-              0
-            }
-          >
-            Add Selected Movies
-            {selectedMovieIds.length >
-              0 &&
-              ` (${selectedMovieIds.length})`}
-          </button>
-        </div>
-      </section>
-    </main>
+      </main>
     </>
   );
 }

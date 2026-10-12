@@ -1,22 +1,30 @@
 
 import {
-  useEffect,
   useState,
 } from "react";
 
 import {
   useNavigate,
+  useOutletContext,
 } from "react-router-dom";
 
 import {
-  getCurrentUser,
   getVotingSession,
-  logoutUser
 } from "../services/api";
 
 import AppHeader from "../components/AppHeader";
 
+import type {
+  User,
+} from "../types/user";
+
 function JoinSession() {
+
+  const { user } =
+  useOutletContext<{
+    user: User;
+  }>();
+
   const [sessionCode, setSessionCode] =
     useState("");
 
@@ -34,29 +42,6 @@ function JoinSession() {
   // -------------------------
   // Check login
   // -------------------------
-
-  useEffect(() => {
-    async function checkAuth() {
-      try {
-        const currentUser =
-          await getCurrentUser();
-
-        setUsername(
-          currentUser.username
-        );
-      } catch {
-        sessionStorage.removeItem(
-          "access_token"
-        );
-
-        navigate("/login");
-      } finally {
-        setCheckingAuth(false);
-      }
-    }
-
-    checkAuth();
-  }, [navigate]);
 
   // -------------------------
   // Join session
@@ -90,7 +75,7 @@ function JoinSession() {
       }
 
       navigate(
-        `/vote/${session.code}`
+        `/voting/${session.code}`
       );
 
     } catch (error) {
@@ -103,28 +88,13 @@ function JoinSession() {
   }
 
   // -------------------------
-  // Loading
-  // -------------------------
-
-  if (checkingAuth) {
-    return (
-      <p>Checking login...</p>
-    );
-  }
-
-  function handleLogout() {
-    logoutUser();
-    navigate("/login");
-  }
-
-  // -------------------------
   // Page
   // -------------------------
 
   return (
     <>
     <AppHeader
-      username={username}
+      username={user.username}
     />
 
     <main className="join-page">
@@ -146,16 +116,9 @@ function JoinSession() {
           <p>
             Logged in as{" "}
             <strong>
-              {username}
+              {user.username}
             </strong>
           </p>
-
-          <button
-            type="button"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
 
           <div className="join-field">
             <label htmlFor="session-code">

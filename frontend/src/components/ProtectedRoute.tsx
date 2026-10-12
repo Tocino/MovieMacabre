@@ -10,7 +10,12 @@ import {
 
 import {
   getCurrentUser,
+  logoutUser,
 } from "../services/api";
+
+import type {
+  User,
+} from "../types/user";
 
 type ProtectedRouteProps = {
   requireAdmin?: boolean;
@@ -19,39 +24,37 @@ type ProtectedRouteProps = {
 function ProtectedRoute({
   requireAdmin = false,
 }: ProtectedRouteProps) {
-  const [isAuthenticated, setIsAuthenticated] =
-    useState<boolean | null>(null);
+  const [user, setUser] =
+    useState<User | null>(null);
 
-  const [isAdmin, setIsAdmin] =
-    useState(false);
+  const [checkingAuth, setCheckingAuth] =
+    useState(true);
 
   useEffect(() => {
     async function checkAuth() {
       try {
-        const user =
+        const currentUser =
           await getCurrentUser();
 
-        setIsAuthenticated(true);
-        setIsAdmin(user.is_admin);
+        setUser(currentUser);
       } catch {
-        sessionStorage.removeItem(
-          "access_token"
-        );
-
-        setIsAuthenticated(false);
+        logoutUser();
+        setUser(null);
+      } finally {
+        setCheckingAuth(false);
       }
     }
 
     checkAuth();
   }, []);
 
-  if (isAuthenticated === null) {
+  if (checkingAuth) {
     return (
       <p>Checking login...</p>
     );
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     return (
       <Navigate
         to="/login"
@@ -62,7 +65,7 @@ function ProtectedRoute({
 
   if (
     requireAdmin &&
-    !isAdmin
+    !user.is_admin
   ) {
     return (
       <Navigate
@@ -72,7 +75,11 @@ function ProtectedRoute({
     );
   }
 
-  return <Outlet />;
+  return (
+    <Outlet
+      context={{ user }}
+    />
+  );
 }
 
 export default ProtectedRoute;

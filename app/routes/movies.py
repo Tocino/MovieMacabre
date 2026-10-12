@@ -2,8 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.schemas import MovieCreate, MovieUpdate, MovieResponse
-from app.services import movie_service
+from app.schemas import MovieCreate, MovieUpdate, MovieResponse, SubgenreResponse
+from app.services import genre_service, movie_service, user_service
+from app.models import User
 
 
 router = APIRouter(
@@ -58,6 +59,17 @@ def get_movies_list(
 
 
 
+@router.get(
+    "/subgenres",
+    response_model=list[SubgenreResponse]
+)
+def get_subgenres(
+    db: Session = Depends(get_db)
+):
+    return genre_service.get_all_subgenres(
+        db=db
+    )
+
 # -----------------------------------------
 # GET ONE MOVIE
 # -----------------------------------------
@@ -91,17 +103,18 @@ def get_movie(
 
 @router.post(
     "/",
-    response_model=MovieResponse,
-    status_code=201
+    response_model=MovieResponse
 )
 def create_movie(
     movie: MovieCreate,
+    current_admin: User = Depends(
+        user_service.require_admin
+    ),
     db: Session = Depends(get_db)
 ):
-
     return movie_service.create_movie(
-        db,
-        movie
+        db=db,
+        movie=movie
     )
 
 
@@ -116,6 +129,9 @@ def create_movie(
 def update_movie(
     movie_id: int,
     movie: MovieUpdate,
+    current_admin: User = Depends(
+        user_service.require_admin
+    ),
     db: Session = Depends(get_db)
 ):
 
@@ -138,12 +154,12 @@ def update_movie(
 # DELETE MOVIE
 # -----------------------------------------
 
-@router.delete(
-    "/{movie_id}",
-    status_code=204
-)
+@router.delete("/{movie_id}")
 def delete_movie(
     movie_id: int,
+    current_admin: User = Depends(
+        user_service.require_admin
+    ),
     db: Session = Depends(get_db)
 ):
 
@@ -159,3 +175,4 @@ def delete_movie(
         )
 
     return None
+

@@ -38,6 +38,7 @@ class MovieUpdate(BaseModel):
         le=5
     )
     subgenre_ids: list[int] | None = None
+    watched: bool | None = None
 
 
 class MovieResponse(BaseModel):
@@ -113,6 +114,7 @@ class MovieResult(BaseModel):
     movie_id: int
     title: str
     votes: int
+    watched: bool
 
 
 class VotingResults(BaseModel):
@@ -125,3 +127,24 @@ class VotingResults(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str
+
+
+
+class GenerateMoviesRequest(BaseModel):
+    movie_count: int = Field(
+        default=6,
+        ge=1,
+        le=20
+    )
+
+    min_scare_rating: int = Field(
+        default=3,
+        ge=1,
+        le=5
+    )
+
+    exclude_watched: bool = True
+
+    subgenre_ids: list[int] = Field(
+        default_factory=list
+    )

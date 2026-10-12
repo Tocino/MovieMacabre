@@ -110,6 +110,9 @@ def update_movie(
 
     if movie_data.scare_rating is not None:
         movie.scare_rating = movie_data.scare_rating
+    
+    if movie_data.watched is not None:
+        movie.watched = movie_data.watched
 
     # Update subgenres if supplied
     if movie_data.subgenre_ids is not None:

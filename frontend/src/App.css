@@ -407,3 +407,29 @@
   align-items: center;
   gap: 16px;
 }
+
+.movie-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.movie-row:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.movie-row-selected {
+  border-color: #888;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.movie-row input[type="checkbox"] {
+  cursor: pointer;
+}

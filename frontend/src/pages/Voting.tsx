@@ -7,23 +7,28 @@ import {
 import {
   useParams,
   useNavigate,
+  useOutletContext
 } from "react-router-dom";
 
 import {
   getVotingSession,
   getUserVotes,
   castVote,
-  getCurrentUser,
-  logoutUser
 } from "../services/api";
 
 import type {
   VotingSession,
 } from "../types/session";
 
+import type {
+  User,
+} from "../types/user";
+
 import AppHeader from "../components/AppHeader";
 
 function Voting() {
+  const { user } = useOutletContext<{ user: User }>();
+
   const [submitMessage, setSubmitMessage] =
     useState("");
 
@@ -32,12 +37,6 @@ function Voting() {
 
   const [submitError, setSubmitError] =
     useState("");
-
-  const [username, setUsername] =
-    useState("");
-
-  const [checkingAuth, setCheckingAuth] =
-    useState(true);
 
   const [session, setSession] =
     useState<VotingSession | null>(null);
@@ -51,37 +50,23 @@ function Voting() {
 
   const navigate = useNavigate();
 
-  // -------------------------
-  // Check authentication
-  // -------------------------
+  const [
+    saveMessage,
+    setSaveMessage,
+  ] = useState("");
 
-  useEffect(() => {
-    async function checkAuth() {
-      try {
-        const currentUser =
-          await getCurrentUser();
+  const [
+    savedMovieIds,
+    setSavedMovieIds,
+  ] = useState<number[]>([]);
 
-        setUsername(
-          currentUser.username
-        );
-      } catch (error) {
-        console.error(
-          "Authentication failed:",
-          error
-        );
-
-        sessionStorage.removeItem(
-          "access_token"
-        );
-
-        navigate("/login");
-      } finally {
-        setCheckingAuth(false);
-      }
-    }
-
-    checkAuth();
-  }, [navigate]);
+  const hasUnsavedChanges =
+    selectedMovieIds.length !==
+      savedMovieIds.length ||
+    selectedMovieIds.some(
+      (id) =>
+        !savedMovieIds.includes(id)
+    );
 
   // -------------------------
   // Load voting session
@@ -125,7 +110,7 @@ function Voting() {
 
   useEffect(() => {
     async function loadUserVotes() {
-      if (!code || checkingAuth) {
+      if (!code) {
         return;
       }
 
@@ -136,6 +121,7 @@ function Voting() {
         setSelectedMovieIds(
           movieIds
         );
+        setSavedMovieIds(movieIds);
       } catch (error) {
         console.error(
           "Failed to load user votes:",
@@ -145,7 +131,7 @@ function Voting() {
     }
 
     loadUserVotes();
-  }, [code, checkingAuth]);
+  }, [code]);
 
   // -------------------------
   // Toggle movie
@@ -154,6 +140,7 @@ function Voting() {
   function toggleMovie(
     movieId: number
   ) {
+    setSaveMessage("");
     setSelectedMovieIds(
       (currentIds) => {
         if (
@@ -177,6 +164,8 @@ function Voting() {
   // -------------------------
 
   async function handleSubmitVote() {
+    setSaveMessage("");
+
     if (!code) {
       setSubmitError(
         "Session code not found."
@@ -203,8 +192,14 @@ function Voting() {
         selectedMovieIds
       );
 
-      setSubmitMessage(
-        "Your votes have been submitted!"
+      setSaveMessage(
+        selectedMovieIds.length === 0
+          ? "Your votes have been cleared."
+          : "Your votes have been saved!"
+      );
+
+      setSavedMovieIds(
+        selectedMovieIds,
       );
     } catch (error) {
       console.error(
@@ -226,21 +221,6 @@ function Voting() {
     }
   }
 
-  // -------------------------
-  // Authentication loading
-  // -------------------------
-
-  if (checkingAuth) {
-    return (
-      <p>Checking login...</p>
-    );
-  }
-
-
-function handleLogout() {
-  logoutUser();
-  navigate("/login");
-}
 
   // -------------------------
   // Page
@@ -249,7 +229,7 @@ function handleLogout() {
 return (
   <>
     <AppHeader
-      username={username}
+      username={user.username}
     />
 
     <main className="app-page">
@@ -274,16 +254,9 @@ return (
             <p>
               Welcome{" "}
               <strong>
-                {username}
+                {user.username}
               </strong>
             </p>
-
-            <button
-              type="button"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
 
             <p>
               Session Code:{" "}
@@ -385,29 +358,38 @@ return (
             {/* Voting controls */}
 
             <div className="form-row">
+              <p className="selection-count">
+                {selectedMovieIds.length === 0
+                  ? "No movies selected"
+                  : `${selectedMovieIds.length} ${
+                      selectedMovieIds.length === 1
+                        ? "movie"
+                        : "movies"
+                    } selected`}
+              </p>
+              {hasUnsavedChanges && (
+                <p className="unsaved-message">
+                  You have unsaved changes.
+                </p>
+              )}
               <button
+                type="button"
                 className="button-primary"
-                onClick={
-                  handleSubmitVote
-                }
+                onClick={handleSubmitVote}
                 disabled={
-                  selectedMovieIds.length ===
-                    0 ||
                   isSubmitting ||
                   !session.is_active
                 }
               >
                 {isSubmitting
-                  ? "Submitting..."
-                  : `Submit Vote${
-                      selectedMovieIds.length >
-                      0
-                        ? ` (${selectedMovieIds.length})`
-                        : ""
-                    }`}
+                  ? "Saving..."
+                  : selectedMovieIds.length === 0
+                    ? "Clear My Votes"
+                    : "Save My Votes"}
               </button>
 
               <button
+                type="button"
                 onClick={() =>
                   navigate(
                     `/voting/${code}/results`,
@@ -418,16 +400,22 @@ return (
                     }
                   )
                 }
+                disabled={hasUnsavedChanges}
               >
                 View Results
               </button>
+              {hasUnsavedChanges && (
+                <p className="unsaved-message">
+                  Save your changes before viewing results.
+                </p>
+              )}
             </div>
 
             {/* Messages */}
 
-            {submitMessage && (
+            {saveMessage && (
               <p className="success-message">
-                {submitMessage}
+                {saveMessage}
               </p>
             )}
 

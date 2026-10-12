@@ -2,23 +2,24 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models import Movie, Subgenre
-from app.routes import movies
-from app.schemas import MovieCreate, MovieUpdate
+
 
 
 # --------------------------------------------------
-# GET ALL MOVIES
+# GET ALL SUBGENRES
 # --------------------------------------------------
 
-def get_all_genres(db: Session):
-
+def get_all_subgenres(
+    db: Session
+):
     statement = (
         select(Subgenre)
+        .order_by(Subgenre.name)
     )
 
-    movies = db.scalars(statement).all()
+    subgenres = (
+        db.scalars(statement).all()
+    )
 
-    return movies
-
-
+    return list(subgenres)
 

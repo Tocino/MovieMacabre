@@ -7,6 +7,7 @@ from app.schemas import UserCreate, UserLogin, UserResponse, TokenResponse
 from app.security import create_access_token
 from app.models import User
 from app.services.user_service import get_current_user
+from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(
     prefix="/users",
@@ -55,13 +56,13 @@ def get_user_by_username(
     response_model=TokenResponse
 )
 def login(
-    login_data: UserLogin,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
     user = user_service.authenticate_user(
         db=db,
-        username=login_data.username,
-        password=login_data.password
+        username=form_data.username,
+        password=form_data.password
     )
 
     if user is None:

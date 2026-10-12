@@ -74,15 +74,21 @@ def get_voting_results(
     db: Session,
     code: str
 ):
-    voting_session = get_session_by_code(db, code)
+    voting_session = get_session_by_code(
+        db,
+        code
+    )
 
     if voting_session is None:
-        raise ValueError("Voting session not found")
+        raise ValueError(
+            "Voting session not found"
+        )
 
     statement = (
         select(
             Movie.id,
             Movie.title,
+            Movie.watched,
             func.count(Vote.id).label("votes")
         )
         .join(
@@ -92,14 +98,19 @@ def get_voting_results(
         .outerjoin(
             Vote,
             (Vote.movie_id == Movie.id) &
-            (Vote.session_id == voting_session.id)
+            (
+                Vote.session_id ==
+                voting_session.id
+            )
         )
         .where(
-            MovieSession.session_id == voting_session.id
+            MovieSession.session_id ==
+            voting_session.id
         )
         .group_by(
             Movie.id,
-            Movie.title
+            Movie.title,
+            Movie.watched
         )
         .order_by(
             func.count(Vote.id).desc()
@@ -111,7 +122,9 @@ def get_voting_results(
     voter_statement = (
         select(
             func.count(
-                func.distinct(Vote.user_id)
+                func.distinct(
+                    Vote.user_id
+                )
             )
         )
         .where(
@@ -121,18 +134,23 @@ def get_voting_results(
     )
 
     total_voters = (
-        db.scalars(voter_statement).one()
+        db.scalars(
+            voter_statement
+        ).one()
         or 0
     )
 
     return {
-        "session_name": voting_session.name,
-        "code": voting_session.code,
+        "session_name":
+            voting_session.name,
+        "code":
+            voting_session.code,
         "results": [
             {
                 "movie_id": row.id,
                 "title": row.title,
-                "votes": row.votes
+                "votes": row.votes,
+                "watched": row.watched,
             }
             for row in rows
         ],

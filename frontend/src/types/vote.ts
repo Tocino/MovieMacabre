@@ -2,6 +2,7 @@ export type MovieResult = {
   movie_id: number
   title: string
   votes: number
+  watched: boolean
 }
 
 export type VotingResults = {

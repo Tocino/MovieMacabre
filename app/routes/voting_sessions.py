@@ -6,12 +6,13 @@ from app.schemas import (
     VotingSessionCreate,
     VotingSessionResponse,
     AddMoviesToSession,
+    GenerateMoviesRequest
 )
 from app.services import voting_service
 from app.models import User
 from app.services import user_service
 from app.services.user_service import get_current_user
-
+from app.services.generator_service import generate_movies_for_session
 
 router = APIRouter(
     prefix="/sessions",
@@ -168,4 +169,45 @@ def open_voting(
             detail=str(error)
         )
 
-    
+
+@router.get(
+    "/",
+    response_model=list[VotingSessionResponse]
+)
+def get_sessions(
+    current_admin: User = Depends(
+        user_service.require_admin
+    ),
+    db: Session = Depends(get_db)
+):
+    return voting_service.get_voting_sessions(
+        db=db
+    )
+
+@router.post(
+    "/{code}/generate",
+    response_model=VotingSessionResponse
+)
+def generate_session_movies(
+    code: str,
+    data: GenerateMoviesRequest,
+    current_admin: User = Depends(
+        user_service.require_admin
+    ),
+    db: Session = Depends(get_db)
+):
+    try:
+        return generate_movies_for_session(
+            db=db,
+            code=code,
+            movie_count=data.movie_count,
+            min_scare_rating=data.min_scare_rating,
+            exclude_watched=data.exclude_watched,
+            subgenre_ids=data.subgenre_ids
+        )
+
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        )

@@ -9,4 +9,5 @@ export interface Movie {
   year: number
   scare_rating: number
   subgenres: Subgenre[]
+  watched: boolean
 }
