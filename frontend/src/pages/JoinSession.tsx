@@ -28,14 +28,8 @@ function JoinSession() {
   const [sessionCode, setSessionCode] =
     useState("");
 
-  const [username, setUsername] =
-    useState("");
-
   const [error, setError] =
     useState("");
-
-  const [checkingAuth, setCheckingAuth] =
-    useState(true);
 
   const navigate = useNavigate();
 

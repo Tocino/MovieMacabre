@@ -3,8 +3,9 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.schemas import MovieCreate, MovieUpdate, MovieResponse, SubgenreResponse
-from app.services import genre_service, movie_service, user_service
+from app.services import user_service
 from app.models import User
+from app.services import genre_service, movie_service
 
 
 router = APIRouter(
@@ -114,7 +115,7 @@ def create_movie(
 ):
     return movie_service.create_movie(
         db=db,
-        movie=movie
+        movie_data=movie
     )
 
 

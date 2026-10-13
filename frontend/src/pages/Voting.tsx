@@ -29,7 +29,7 @@ import AppHeader from "../components/AppHeader";
 function Voting() {
   const { user } = useOutletContext<{ user: User }>();
 
-  const [submitMessage, setSubmitMessage] =
+  const [, setSubmitMessage] =
     useState("");
 
   const [isSubmitting, setIsSubmitting] =

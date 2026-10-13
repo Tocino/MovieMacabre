@@ -1,10 +1,13 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import Base, engine
-from app.routes import movies, genres, users, voting_sessions, votes
+from app.routes import voting_sessions
 
 # Import models so SQLAlchemy knows about them
 from app import models
+from app.routes import genres, movies, users, votes
 
 
 # Create database tables
@@ -18,14 +21,14 @@ app = FastAPI(
     version="0.1.0"
 )
 
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+FRONTEND_URL = os.getenv(
+    "FRONTEND_URL",
+    "http://localhost:5173"
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
