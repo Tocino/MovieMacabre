@@ -7,8 +7,7 @@ services:
 
     container_name: moviemacabre-backend
 
-    ports:
-      - "8000:8000"
+    restart: unless-stopped
 
     environment:
       SECRET_KEY: ${SECRET_KEY}
@@ -27,8 +26,10 @@ services:
 
     container_name: moviemacabre-frontend
 
+    restart: unless-stopped
+
     ports:
-      - "5173:80"
+      - "80:80"
 
     depends_on:
       - backend
