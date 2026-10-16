@@ -1,0 +1,19 @@
+name: Deploy MovieMacabre
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-deployment-workflow:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Confirm workflow
+        run: |
+          echo "MovieMacabre deployment workflow triggered successfully."
+          echo "Commit: $GITHUB_SHA"
