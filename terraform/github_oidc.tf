@@ -69,6 +69,15 @@ resource "aws_iam_role_policy" "github_deploy_ssm" {
         ]
 
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+
+        Action = [
+          "ec2:DescribeInstances"
+        ]
+
+        Resource = "*"
       }
     ]
   })

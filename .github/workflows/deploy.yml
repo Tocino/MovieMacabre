@@ -26,7 +26,19 @@ jobs:
       - name: Verify AWS authentication
         run: aws sts get-caller-identity
 
+      - name: Check EC2 state
+        id: ec2
+        run: |
+          STATE=$(aws ec2 describe-instances \
+            --instance-ids "i-075358cc2b0e569df" \
+            --query "Reservations[0].Instances[0].State.Name" \
+            --output text)
+
+          echo "EC2 state: $STATE"
+          echo "state=$STATE" >> "$GITHUB_OUTPUT"
+
       - name: Deploy MovieMacabre through SSM
+        if: steps.ec2.outputs.state == 'running'
         run: |
           COMMAND_ID=$(aws ssm send-command \
             --instance-ids "i-075358cc2b0e569df" \
