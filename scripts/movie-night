@@ -32,6 +32,17 @@ case "$1" in
     echo "EC2 is running."
     echo "Public IP: $PUBLIC_IP"
 
+    echo "Waiting for SSM..."
+
+    until [ "$(aws ssm describe-instance-information \
+      --filters "Key=InstanceIds,Values=$INSTANCE_ID" \
+      --region "$REGION" \
+      --query "InstanceInformationList[0].PingStatus" \
+      --output text)" = "Online" ]; do
+      sleep 5
+    done
+
+    echo "SSM is online."
 
     echo "Updating Route 53..."
 
