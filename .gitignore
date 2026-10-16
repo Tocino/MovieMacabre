@@ -5,3 +5,6 @@ terraform/terraform.tfvars
 *.tfstate
 *.tfstate.*
 *.tfvars
+
+# Runtime database
+data/*.db
