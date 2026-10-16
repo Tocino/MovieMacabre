@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-              - name: Inspect GitHub OIDC claims
+      - name: Inspect GitHub OIDC claims
         shell: bash
         run: |
           TOKEN_RESPONSE=$(curl -sSf \
