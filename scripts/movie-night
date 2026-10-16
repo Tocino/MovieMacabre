@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+
+set -e
+
+INSTANCE_ID=$(terraform -chdir=terraform output -raw instance_id)
+ZONE_ID=$(terraform -chdir=terraform output -raw route53_zone_id)
+
+REGION="us-east-1"
+DOMAIN="movie-macabre.com"
+
+case "$1" in
+  start)
+    echo "Starting MovieMacabre..."
+
+    aws ec2 start-instances \
+      --instance-ids "$INSTANCE_ID" \
+      --region "$REGION" \
+      > /dev/null
+
+    echo "Waiting for EC2 to start..."
+
+    aws ec2 wait instance-running \
+      --instance-ids "$INSTANCE_ID" \
+      --region "$REGION"
+
+    PUBLIC_IP=$(aws ec2 describe-instances \
+      --instance-ids "$INSTANCE_ID" \
+      --region "$REGION" \
+      --query "Reservations[0].Instances[0].PublicIpAddress" \
+      --output text)
+
+    echo "EC2 is running."
+    echo "Public IP: $PUBLIC_IP"
+
+
+    echo "Updating Route 53..."
+
+    aws route53 change-resource-record-sets \
+      --hosted-zone-id "$ZONE_ID" \
+      --change-batch "{
+        \"Changes\": [
+          {
+            \"Action\": \"UPSERT\",
+            \"ResourceRecordSet\": {
+              \"Name\": \"$DOMAIN\",
+              \"Type\": \"A\",
+              \"TTL\": 60,
+              \"ResourceRecords\": [
+                {
+                  \"Value\": \"$PUBLIC_IP\"
+                }
+              ]
+            }
+          }
+        ]
+      }" > /dev/null
+
+    echo "Route 53 updated."
+    echo "MovieMacabre: https://$DOMAIN"
+
+    echo "Waiting for MovieMacabre to become available..."
+
+    until curl --silent --fail --head "https://$DOMAIN" > /dev/null; do
+      sleep 5
+    done
+
+    echo "MovieMacabre is ready!"
+    echo "https://$DOMAIN"
+;;
+
+  stop)
+    echo "Stopping MovieMacabre..."
+
+    aws ec2 stop-instances \
+      --instance-ids "$INSTANCE_ID" \
+      --region "$REGION" \
+      > /dev/null
+
+    echo "Waiting for EC2 to stop..."
+
+    aws ec2 wait instance-stopped \
+      --instance-ids "$INSTANCE_ID" \
+      --region "$REGION"
+
+    echo "MovieMacabre is stopped."
+    ;;
+
+  status)
+    STATE=$(aws ec2 describe-instances \
+      --instance-ids "$INSTANCE_ID" \
+      --region "$REGION" \
+      --query "Reservations[0].Instances[0].State.Name" \
+      --output text)
+
+    echo "MovieMacabre EC2 status: $STATE"
+
+    if [ "$STATE" = "running" ]; then
+      PUBLIC_IP=$(aws ec2 describe-instances \
+        --instance-ids "$INSTANCE_ID" \
+        --region "$REGION" \
+        --query "Reservations[0].Instances[0].PublicIpAddress" \
+        --output text)
+
+      echo "Public IP: $PUBLIC_IP"
+      echo "URL: https://$DOMAIN"
+    fi
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop|status}"
+    exit 1
+    ;;
+esac
