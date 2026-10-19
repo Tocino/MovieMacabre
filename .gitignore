@@ -1,15 +1,5 @@
-.env
-terraform/terraform.tfvars
-# Terraform
-**/.terraform/*
-*.tfstate
-*.tfstate.*
-*.tfvars
-
 # Runtime database
 data/*.db
-
-
 
 # Python
 __pycache__/
