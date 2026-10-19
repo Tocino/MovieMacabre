@@ -30,7 +30,8 @@ resource "aws_instance" "moviemacabre" {
   subnet_id              = aws_subnet.public.id
   vpc_security_group_ids = [aws_security_group.moviemacabre.id]
 
-  key_name = aws_key_pair.moviemacabre.key_name
+  key_name             = aws_key_pair.moviemacabre.key_name
+  iam_instance_profile = aws_iam_instance_profile.moviemacabre.name
 
   tags = {
     Name = "moviemacabre-server"

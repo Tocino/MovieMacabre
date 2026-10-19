@@ -8,3 +8,34 @@ terraform/terraform.tfvars
 
 # Runtime database
 data/*.db
+
+
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Local databases
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+
+# Terraform lock file should be committed
+# Do not ignore .terraform.lock.hcl
