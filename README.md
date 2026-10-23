@@ -8,6 +8,9 @@ The project also demonstrates full-stack development, infrastructure as code, co
 
 **Live Application:** [movie-macabre.com](https://movie-macabre.com)
 
+![MovieMacabre Voting Interface](docs/screenshots/MovieMacabre_Voting.png)
+
+
 ## Features
 
 ### 🎥 Movie Night Management
@@ -31,6 +34,37 @@ The project also demonstrates full-stack development, infrastructure as code, co
 - JWT-based authentication
 - Role-based authorization for administrative operations
 - Protected frontend routes
+
+
+<h2>Application Screenshots</h2>
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/MovieMacabre_JoinSession.png"
+           alt="Join Session">
+      <p align="center"><b>Join Session</b></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/MovieMacabre_Login.png"
+           alt="Movie Voting">
+      <p align="center"><b>Movie Voting</b></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/MovieMacabre_admin.png"
+           alt="Admin Dashboard">
+      <p align="center"><b>Admin Dashboard</b></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/MovieMacabre_Results.png"
+           alt="Voting Results">
+      <p align="center"><b>Voting Results</b></p>
+    </td>
+  </tr>
+</table>
+
 
 ## Technology Stack
 
