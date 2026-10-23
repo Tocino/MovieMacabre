@@ -12,6 +12,8 @@ venv/
 *.db-journal
 *.db-shm
 *.db-wal
+*.sqlite
+*.sqlite3
 
 # Environment variables
 .env
@@ -26,6 +28,10 @@ venv/
 *.tfvars.json
 crash.log
 crash.*.log
+
+# Node
+node_modules/
+dis
 
 # Terraform lock file should be committed
 # Do not ignore .terraform.lock.hcl
