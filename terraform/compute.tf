@@ -36,4 +36,8 @@ resource "aws_instance" "moviemacabre" {
   tags = {
     Name = "moviemacabre-server"
   }
+
+  lifecycle {
+    ignore_changes = [ami]
+  }
 }
