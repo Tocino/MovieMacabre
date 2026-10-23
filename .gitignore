@@ -31,6 +31,7 @@ crash.*.log
 
 # Node
 node_modules/
+**/node_modules/
 dis
 
 # Terraform lock file should be committed
